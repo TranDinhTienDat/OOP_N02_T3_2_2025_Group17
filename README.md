@@ -1,8 +1,8 @@
 # OOP_N02_T3_2_2025_Group17
 
-Ứng dụng: Quản lý bệnh nhân
+# Ứng dụng: Quản lý bệnh nhân
 
-Phân tích đối tượng:
+# Phân tích đối tượng:
 1. Bệnh nhân (Patient).
 2. Bác sĩ (Doctor).
 3. Điều dưỡng (Nurse).
