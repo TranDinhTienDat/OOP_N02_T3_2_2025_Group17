@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "quanLyPhongKham/src",
+        "quanLyPhongKham/review",
+        "quanLyPhongKham/test"
+    ],
+    "java.project.referencedLibraries": []
+}

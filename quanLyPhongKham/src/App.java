@@ -1,3 +1,4 @@
+
 public class App {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
@@ -7,6 +8,8 @@ public class App {
       //  testPatient.test();
       // tp.test();
       BreakAndContinue.testBreakAndContinue();
+      int x = randNum.randomNumber();
+      System.out.println("Ramdom number: " + x);
 
 
     }
