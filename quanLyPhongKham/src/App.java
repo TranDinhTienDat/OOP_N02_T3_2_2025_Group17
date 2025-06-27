@@ -4,8 +4,9 @@ public class App {
 
       //  testPatient tp = new  testPatient();
 
-        testPatient.test();
+      //  testPatient.test();
       // tp.test();
+      BreakAndContinue.testBreakAndContinue();
 
 
     }
