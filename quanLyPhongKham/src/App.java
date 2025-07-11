@@ -4,7 +4,12 @@ public class App {
         System.out.println("Hello, World!");
 
       testbook.meme();
+      TestPatient.TestPatient();
+
+      
+}
+
+      
 
 
     }
-}
