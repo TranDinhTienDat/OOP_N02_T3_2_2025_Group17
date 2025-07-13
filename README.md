@@ -10,10 +10,5 @@
 
 # Phân tích đối tượng:
 1. Bệnh nhân (Patient): Tên, tuổi, bệnh lý, nhóm máu, chi phí.
-2. Bác sĩ (Doctor): Tên, chuyên môn, lịch khám.
-3. Điều dưỡng (Nurse): Tên, bộ phận, công việc.
-4. Phòng khám / Bệnh viện (Hospital/Clinic): Tên, địa chỉ, phòng ban.
-5. Thuốc (Medication): Tên, liều lượng, cách sử dụng.
-6. Hóa đơn (Billing): Mã hóa đơn, chi phí, thanh toán.
-7. Lịch hẹn (Appointment): Thời gian, bác sĩ, bệnh nhân.
-
+2. Phòng khám / Bệnh viện (Hospital/Clinic): Tên, địa chỉ, phòng ban.
+3. Hóa đơn (Billing): Mã hóa đơn, chi phí, thanh toán.
