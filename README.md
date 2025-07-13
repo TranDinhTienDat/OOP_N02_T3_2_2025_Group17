@@ -9,6 +9,6 @@
 # Ứng dụng: Quản lý bệnh nhân
 
 # Phân tích đối tượng:
-1. Bệnh nhân (Patient): Tên, tuổi, bệnh lý, nhóm máu, chi phí.
-2. Phòng khám / Bệnh viện (Hospital/Clinic): Tên, địa chỉ, phòng ban.
-3. Hóa đơn (Billing): Mã hóa đơn, chi phí, thanh toán.
+1. Bệnh nhân (Patient): Mã, tên, tuổi, giới tính.
+2. Phòng khám / Bệnh viện (Hospital/Clinic): Danh sách bệnh nhân.
+3. Giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân
