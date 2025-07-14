@@ -1,18 +1,14 @@
-## Getting Started
+# OOP_N02_T3_2_2025_Group17
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
 
-## Folder Structure
+# Thành viên: 
+1. Trần Đình Tiến Đạt (24100257) githubID: TranDinhTienDat
+2. Cao Tiến Duy (24100487) githubID: duyneme
+3. Nguyễn Văn Hào (24100450) githubID: haonguyen06
 
-The workspace contains two folders by default, where:
+# Ứng dụng: Quản lý bệnh nhân
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+# Phân tích đối tượng:
+1. Bệnh nhân (Patient): Mã, tên, tuổi, giới tính.
+2. Phòng khám / Bệnh viện (Hospital/Clinic): Danh sách bệnh nhân.
+3. Giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân.
