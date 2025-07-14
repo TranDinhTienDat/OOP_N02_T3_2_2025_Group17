@@ -14,7 +14,9 @@
 
   Sơ đồ hoạt động  
   
- < img src='anh/PhongKham.jpg'>
+ < img src='anh/PhongKham (1).jpg'>
+ 
+ 
  
   
 4. Giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân
