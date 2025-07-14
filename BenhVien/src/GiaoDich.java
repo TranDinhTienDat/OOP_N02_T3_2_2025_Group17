@@ -20,8 +20,6 @@ public class GiaoDich {
     public void setMaBenhNhan(String maBenhNhan) { this.maBenhNhan = maBenhNhan; }
     public void setSoTien(double soTien) { this.soTien = soTien; }
     public void setNgayGiaoDich(String ngayGiaoDich) { this.ngayGiaoDich = ngayGiaoDich; }
-
-    @Override
     public String toString() {
         return "GiaoDich{" +
                 "maGD='" + maGiaoDich + '\'' +
