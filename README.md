@@ -13,7 +13,6 @@
 2. Phòng khám / Bệnh viện (Hospital/Clinic): Danh sách bệnh nhân.
 
   Sơ đồ hoạt động 
-
-  < img src='anh/PhongKham.jpg'>
+ < img src='anh/PhongKham.jpg'>
   
 4. Giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân
