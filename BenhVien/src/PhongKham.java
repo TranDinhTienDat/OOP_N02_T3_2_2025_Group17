@@ -25,7 +25,6 @@ public class PhongKham {
     public String getTen() { return ten; }
     public String getDiaChi() { return diaChi; }
 
-    @Override
     public String toString() {
         return "PhongKham{" +
                 "ten='" + ten + '\'' +
