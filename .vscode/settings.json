@@ -3,7 +3,8 @@
         "quanLyPhongKham/test",
         "quanLyPhongKham/src",
         "quanLyPhongKham/review",
-        "quanlyphongkhamnew/src"
+        "quanlyphongkhamnew/src",
+        "quanlyphongkhamnew/Test"
     ],
     "java.project.referencedLibraries": []
 }
