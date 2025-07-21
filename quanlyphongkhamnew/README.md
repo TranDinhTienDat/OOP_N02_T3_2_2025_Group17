@@ -9,11 +9,11 @@
 # Ứng dụng: Quản lý bệnh nhân
 
 # Phân tích đối tượng:
-1. Bệnh nhân (Patient): Mã, tên, tuổi, giới tính.
+1. Bệnh nhân /Danh sách bệnh nhân/sửa bệnh nhân / thêm bệnh (Patient): Mã, tên, tuổi, giới tính.
 2. Phòng khám / Bệnh viện (Hospital/Clinic): Danh sách bệnh nhân.
 
    so do hoat dong
 
    <img src='anh/PhongKham (1).jpg'>
    
-4. Giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân.
+4. Giao dịch /hiển thị giao dịch (Billing): Liên kết đến bệnh nhân qua mã bệnh nhân.
