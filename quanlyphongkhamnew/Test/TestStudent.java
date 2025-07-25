@@ -1,3 +1,5 @@
+import review.Student;
+
 public class TestStudent {
 public static void testStudent() {
 Student s1 = new Student("Fred", 3.0F);
