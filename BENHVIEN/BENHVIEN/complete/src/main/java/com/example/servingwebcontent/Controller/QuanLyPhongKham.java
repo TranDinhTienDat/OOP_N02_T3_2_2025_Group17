@@ -1,30 +1,27 @@
 package com.example.servingwebcontent.Controller;
 
-import com.example.servingwebcontent.Model.PhongKham;
-import com.example.servingwebcontent.Repository.PhongKhamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.ArrayList;
+import java.util.List;
 
-@Controller
+import com.example.servingwebcontent.model.PhongKham;
+
 public class QuanLyPhongKham {
 
-    @Autowired
-    private PhongKhamRepository phongKhamRepository;
+    private final List<PhongKham> danhSach = new ArrayList<>();
 
-    @GetMapping("/phongkham")
-    public String listPhongKham(Model model) {
-        model.addAttribute("phongKhams", phongKhamRepository.findAll());
-        return "phongkham";
+    public void them(PhongKham phongKham) {
+        if (phongKham != null) {
+            danhSach.add(phongKham);
+        }
     }
 
-    @PostMapping("/phongkham/add")
-    public String addPhongKham(@RequestParam String tenPhong, @RequestParam String chuyenKhoa) {
-        PhongKham phongKham = new PhongKham(tenPhong, chuyenKhoa);
-        phongKhamRepository.save(phongKham);
-        return "redirect:/phongkham";
+    public void xoa(int chiSo) {
+        if (chiSo >= 0 && chiSo < danhSach.size()) {
+            danhSach.remove(chiSo);
+        }
+    }
+
+    public List<PhongKham> layDanhSach() {
+        return new ArrayList<>(danhSach);
     }
 }
