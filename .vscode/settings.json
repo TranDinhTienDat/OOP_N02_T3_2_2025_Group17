@@ -6,5 +6,6 @@
         "quanlyphongkhamnew/src",
         "quanlyphongkhamnew/Test"
     ],
-    "java.project.referencedLibraries": []
+    "java.project.referencedLibraries": [],
+    "java.compile.nullAnalysis.mode": "automatic"
 }
