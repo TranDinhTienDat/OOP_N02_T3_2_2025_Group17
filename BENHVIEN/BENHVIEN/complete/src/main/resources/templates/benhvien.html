@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Bệnh Viện</title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Hệ thống Quản lý Bệnh Viện</h1>
+
+    <h2>Danh sách Bệnh nhân</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên</th>
+                <th>Số điện thoại</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="patient, stat : ${patients}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${patient.ten}"></td>
+                <td th:text="${patient.soDienThoai}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Danh sách Phòng khám</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên Phòng</th>
+                <th>Chuyên khoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="room, stat : ${rooms}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${room.tenPhong}"></td>
+                <td th:text="${room.chuyenKhoa}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Danh sách Giao dịch</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Bệnh nhân</th>
+                <th>Phòng khám</th>
+                <th>Thời gian</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="transaction, stat : ${transactions}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${transaction.benhNhan.ten}"></td>
+                <td th:text="${transaction.phongKham.tenPhong}"></td>
+                <td th:text="${transaction.thoiGian}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
