@@ -1,30 +1,27 @@
 package com.example.servingwebcontent.Controller;
 
-import com.example.servingwebcontent.Model.BenhNhan;
-import com.example.servingwebcontent.Repository.BenhNhanRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import java.util.ArrayList;
+import java.util.List;
 
-@Controller
+import com.example.servingwebcontent.model.BenhNhan;
+
 public class QuanLyBenhNhan {
 
-    @Autowired
-    private BenhNhanRepository benhNhanRepository;
+    private final List<BenhNhan> danhSach = new ArrayList<>();
 
-    @GetMapping("/benhnhan")
-    public String listBenhNhan(Model model) {
-        model.addAttribute("benhNhans", benhNhanRepository.findAll());
-        return "benhnhan";
+    public void them(BenhNhan benhNhan) {
+        if (benhNhan != null) {
+            danhSach.add(benhNhan);
+        }
     }
 
-    @PostMapping("/benhnhan/add")
-    public String addBenhNhan(@RequestParam String hoTen, @RequestParam int tuoi, @RequestParam String gioiTinh) {
-        BenhNhan benhNhan = new BenhNhan(hoTen, tuoi, gioiTinh);
-        benhNhanRepository.save(benhNhan);
-        return "redirect:/benhnhan";
+    public void xoa(int chiSo) {
+        if (chiSo >= 0 && chiSo < danhSach.size()) {
+            danhSach.remove(chiSo);
+        }
+    }
+
+    public List<BenhNhan> layDanhSach() {
+        return new ArrayList<>(danhSach);
     }
 }

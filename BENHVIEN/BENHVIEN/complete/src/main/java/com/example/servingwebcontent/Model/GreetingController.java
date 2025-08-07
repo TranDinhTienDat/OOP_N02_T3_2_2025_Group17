@@ -1,19 +1,19 @@
-package com.example.servingwebcontent;
-
-import com.example.servingwebcontent.model.BenhNhan;
-import com.example.servingwebcontent.model.GiaoDich;
-import com.example.servingwebcontent.model.PhongKham;
-import com.example.servingwebcontent.controller.QuanLyBenhNhan;
-import com.example.servingwebcontent.controller.QuanLyGiaoDich;
-import com.example.servingwebcontent.controller.QuanLyPhongKham;
+package com.example.servingwebcontent.Model;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import quanlybenhvien.servingwebcontent.controller.QuanLyBenhNhan;
+import quanlybenhvien.servingwebcontent.controller.QuanLyGiaoDich;
+import quanlybenhvien.servingwebcontent.controller.QuanLyPhongKham;
+import quanlybenhvien.servingwebcontent.model.BenhNhan;
+import quanlybenhvien.servingwebcontent.model.GiaoDich;
+import quanlybenhvien.servingwebcontent.model.PhongKham;
+
 @Controller
-public class HospitalController {
+public class GreetingController {
 
     private static final QuanLyBenhNhan quanLyBenhNhan = new QuanLyBenhNhan();
     private static final QuanLyPhongKham quanLyPhongKham = new QuanLyPhongKham();
