@@ -15,6 +15,10 @@ public class QuanLyBenhNhan {
         }
     }
 
+     public List<BenhNhan> getDanhSach() {
+        return danhSach;
+    }
+
     public void xoa(int chiSo) {
         if (chiSo >= 0 && chiSo < danhSach.size()) {
             danhSach.remove(chiSo);
