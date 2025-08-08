@@ -5,12 +5,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import quanlybenhvien.servingwebcontent.controller.QuanLyBenhNhan;
-import quanlybenhvien.servingwebcontent.controller.QuanLyGiaoDich;
-import quanlybenhvien.servingwebcontent.controller.QuanLyPhongKham;
-import quanlybenhvien.servingwebcontent.model.BenhNhan;
-import quanlybenhvien.servingwebcontent.model.GiaoDich;
-import quanlybenhvien.servingwebcontent.model.PhongKham;
+import com.example.servingwebcontent.Controller.QuanLyBenhNhan;
+import com.example.servingwebcontent.Controller.QuanLyGiaoDich;
+import com.example.servingwebcontent.Controller.QuanLyPhongKham;
+import com.example.servingwebcontent.Model.BenhNhan;
+import com.example.servingwebcontent.Model.GiaoDich;
+import com.example.servingwebcontent.Model.PhongKham;
 
 @Controller
 public class GreetingController {
