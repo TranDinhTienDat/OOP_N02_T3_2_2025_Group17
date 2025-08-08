@@ -1,13 +1,10 @@
-package com.example.servingwebcontent.Model;
+package com.example.servingwebcontent.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.servingwebcontent.Controller.QuanLyBenhNhan;
-import com.example.servingwebcontent.Controller.QuanLyGiaoDich;
-import com.example.servingwebcontent.Controller.QuanLyPhongKham;
 import com.example.servingwebcontent.Model.BenhNhan;
 import com.example.servingwebcontent.Model.GiaoDich;
 import com.example.servingwebcontent.Model.PhongKham;
