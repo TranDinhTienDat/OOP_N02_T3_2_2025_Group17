@@ -3,7 +3,7 @@ package com.example.servingwebcontent.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.servingwebcontent.model.PhongKham;
+import com.example.servingwebcontent.Model.PhongKham;
 
 public class QuanLyPhongKham {
 
