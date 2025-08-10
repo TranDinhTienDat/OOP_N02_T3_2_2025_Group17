@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <title>Quản lý Bệnh Viện</title>
     <style>
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .form-group { margin-bottom: 15px; }
+        .form-container { background: #f9f9f9; padding: 20px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
     <h1>Hệ thống Quản lý Bệnh Viện</h1>
 
+    <!-- Danh sách Bệnh nhân -->
     <h2>Danh sách Bệnh nhân</h2>
     <table>
         <thead>
@@ -18,17 +21,38 @@
                 <th>STT</th>
                 <th>Tên</th>
                 <th>Số điện thoại</th>
+                <th>Thao tác</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="patient, stat : ${patients}">
+            <tr th:each="benhNhan, stat : ${danhSachBenhNhan}">
                 <td th:text="${stat.index + 1}"></td>
-                <td th:text="${patient.ten}"></td>
-                <td th:text="${patient.soDienThoai}"></td>
+                <td th:text="${benhNhan.ten}"></td>
+                <td th:text="${benhNhan.soDienThoai}"></td>
+                <td>
+                    <a th:href="@{/xoaBenhNhan/{index}(index=${stat.index})}">Xóa</a>
+                </td>
             </tr>
         </tbody>
     </table>
 
+    <!-- Form thêm Bệnh nhân -->
+    <div class="form-container">
+        <h3>Thêm Bệnh nhân</h3>
+        <form th:action="@{/themBenhNhan}" method="post">
+            <div class="form-group">
+                <label>Tên bệnh nhân:</label>
+                <input type="text" name="ten" required>
+            </div>
+            <div class="form-group">
+                <label>Số điện thoại:</label>
+                <input type="text" name="soDienThoai" required>
+            </div>
+            <button type="submit">Thêm</button>
+        </form>
+    </div>
+
+    <!-- Danh sách Phòng khám -->
     <h2>Danh sách Phòng khám</h2>
     <table>
         <thead>
@@ -39,14 +63,31 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="room, stat : ${rooms}">
+            <tr th:each="phongKham, stat : ${danhSachPhongKham}">
                 <td th:text="${stat.index + 1}"></td>
-                <td th:text="${room.tenPhong}"></td>
-                <td th:text="${room.chuyenKhoa}"></td>
+                <td th:text="${phongKham.tenPhong}"></td>
+                <td th:text="${phongKham.chuyenKhoa}"></td>
             </tr>
         </tbody>
     </table>
 
+    <!-- Form thêm Phòng khám -->
+    <div class="form-container">
+        <h3>Thêm Phòng khám</h3>
+        <form th:action="@{/themPhongKham}" method="post">
+            <div class="form-group">
+                <label>Tên phòng:</label>
+                <input type="text" name="tenPhong" required>
+            </div>
+            <div class="form-group">
+                <label>Chuyên khoa:</label>
+                <input type="text" name="chuyenKhoa" required>
+            </div>
+            <button type="submit">Thêm</button>
+        </form>
+    </div>
+
+    <!-- Danh sách Giao dịch -->
     <h2>Danh sách Giao dịch</h2>
     <table>
         <thead>
@@ -58,13 +99,43 @@
             </tr>
         </thead>
         <tbody>
-            <tr th:each="transaction, stat : ${transactions}">
+            <tr th:each="giaoDich, stat : ${danhSachGiaoDich}">
                 <td th:text="${stat.index + 1}"></td>
-                <td th:text="${transaction.benhNhan.ten}"></td>
-                <td th:text="${transaction.phongKham.tenPhong}"></td>
-                <td th:text="${transaction.thoiGian}"></td>
+                <td th:text="${giaoDich.benhNhan.ten} + ' - ' + ${giaoDich.benhNhan.soDienThoai}"></td>
+                <td th:text="${giaoDich.phongKham.tenPhong} + ' (' + ${giaoDich.phongKham.chuyenKhoa} + ')'"></td>
+                <td th:text="${giaoDich.thoiGian}"></td>
             </tr>
         </tbody>
     </table>
+
+    <!-- Form thêm Giao dịch -->
+    <div class="form-container">
+        <h3>Thêm Giao dịch</h3>
+        <form th:action="@{/themGiaoDich}" method="post">
+            <div class="form-group">
+                <label>Bệnh nhân:</label>
+                <select name="benhNhanIndex" required>
+                    <option th:each="benhNhan, stat : ${danhSachBenhNhan}" 
+                            th:value="${stat.index}"
+                            th:text="${benhNhan.ten} + ' - ' + ${benhNhan.soDienThoai}">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Phòng khám:</label>
+                <select name="phongKhamIndex" required>
+                    <option th:each="phongKham, stat : ${danhSachPhongKham}" 
+                            th:value="${stat.index}"
+                            th:text="${phongKham.tenPhong} + ' (' + ${phongKham.chuyenKhoa} + ')'">
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Thời gian:</label>
+                <input type="text" name="thoiGian" required>
+            </div>
+            <button type="submit">Thêm</button>
+        </form>
+    </div>
 </body>
 </html>
