@@ -2,86 +2,145 @@ package com.example.servingwebcontent.Controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import com.example.servingwebcontent.Model.BenhNhan;
-import com.example.servingwebcontent.Model.GiaoDich;
-import com.example.servingwebcontent.Model.PhongKham;
+import org.springframework.web.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class GreetingController {
 
-    private static final QuanLyBenhNhan quanLyBenhNhan = new QuanLyBenhNhan();
-    private static final QuanLyPhongKham quanLyPhongKham = new QuanLyPhongKham();
-    private static final QuanLyGiaoDich quanLyGiaoDich = new QuanLyGiaoDich();
+    private List<BenhNhan> danhSachBenhNhan = new ArrayList<>();
+    private List<PhongKham> danhSachPhongKham = new ArrayList<>();
+    private List<GiaoDich> danhSachGiaoDich = new ArrayList<>();
 
-    static {
-        quanLyBenhNhan.them(new BenhNhan("Nguyễn Văn A", "0909123456"));
-        quanLyBenhNhan.them(new BenhNhan("Trần Thị B", "0912345678"));
-        quanLyPhongKham.them(new PhongKham("Phòng Cấp Cứu", "Cấp cứu"));
-        quanLyPhongKham.them(new PhongKham("Phòng Nội", "Nội khoa"));
-        quanLyGiaoDich.them(new GiaoDich(
-            quanLyBenhNhan.getDanhSach().get(0),
-            quanLyPhongKham.getDanhSach().get(0),
-            "10:00 AM"
-        ));
+    // ------------------ THÊM MỚI ------------------
+    @GetMapping("/greeting")
+    public String greeting(
+            @RequestParam(name = "name", required = false, defaultValue = "Khách") String name,
+            @RequestParam(name = "age", required = false, defaultValue = "") String age,
+            @RequestParam(name = "disease", required = false, defaultValue = "") String disease,
+            Model model) {
+
+        model.addAttribute("name", name);
+        model.addAttribute("age", age);
+        model.addAttribute("disease", disease);
+        return "greeting";
     }
+    // -----------------------------------------------
 
-    // Thêm bệnh nhân
-    @GetMapping("/patient")
-    public String themBenhNhan(
-        @RequestParam(name = "name", required = false, defaultValue = "Khách lạ") String name,
-        @RequestParam(name = "phone", required = false, defaultValue = "Không rõ") String phone,
-        Model model) {
-
-        BenhNhan benhNhan = new BenhNhan(name, phone);
-        quanLyBenhNhan.them(benhNhan);
-        return "redirect:/benhvien";
-    }
-
-    // Xóa bệnh nhân
-    @GetMapping("/patient/delete")
-    public String xoaBenhNhan(@RequestParam(name = "index") int index) {
-        quanLyBenhNhan.xoa(index);
-        return "redirect:/benhvien";
-    }
-
-    // Thêm phòng khám
-    @GetMapping("/room")
-    public String themPhongKham(
-        @RequestParam(name = "name", required = false, defaultValue = "Phòng khám chung") String name,
-        @RequestParam(name = "specialty", required = false, defaultValue = "Tổng quát") String specialty,
-        Model model) {
-
-        PhongKham phongKham = new PhongKham(name, specialty);
-        quanLyPhongKham.them(phongKham);
-        return "redirect:/benhvien";
-    }
-
-    // Thêm giao dịch
-    @GetMapping("/transaction")
-    public String themGiaoDich(
-        @RequestParam(name = "patientName", required = false, defaultValue = "Nguyễn Văn A") String patientName,
-        @RequestParam(name = "patientPhone", required = false, defaultValue = "0909123456") String patientPhone,
-        @RequestParam(name = "roomName", required = false, defaultValue = "Phòng Cấp Cứu") String roomName,
-        @RequestParam(name = "roomSpecialty", required = false, defaultValue = "Cấp cứu") String roomSpecialty,
-        @RequestParam(name = "time", required = false, defaultValue = "11:00 AM") String time,
-        Model model) {
-
-        BenhNhan benhNhan = new BenhNhan(patientName, patientPhone);
-        PhongKham phongKham = new PhongKham(roomName, roomSpecialty);
-        GiaoDich giaoDich = new GiaoDich(benhNhan, phongKham, time);
-        quanLyGiaoDich.them(giaoDich);
-        return "redirect:/benhvien";
-    }
-
-    // Trang chính hiển thị danh sách
     @GetMapping("/benhvien")
-    public String benhvien(Model model) {
-        model.addAttribute("patients", quanLyBenhNhan.getDanhSach());
-        model.addAttribute("rooms", quanLyPhongKham.getDanhSach());
-        model.addAttribute("transactions", quanLyGiaoDich.getDanhSach());
+    public String benhVien(Model model) {
+        // Thêm dữ liệu mẫu nếu danh sách rỗng
+        if (danhSachBenhNhan.isEmpty()) {
+            danhSachBenhNhan.add(new BenhNhan("Nguyễn Văn A", "0123456789"));
+            danhSachBenhNhan.add(new BenhNhan("Trần Thị B", "0987654321"));
+        }
+        if (danhSachPhongKham.isEmpty()) {
+            danhSachPhongKham.add(new PhongKham("Phòng Nội", "Nội tổng quát"));
+            danhSachPhongKham.add(new PhongKham("Phòng Ngoại", "Ngoại chấn thương"));
+        }
+
+        model.addAttribute("danhSachBenhNhan", danhSachBenhNhan);
+        model.addAttribute("danhSachPhongKham", danhSachPhongKham);
+        model.addAttribute("danhSachGiaoDich", danhSachGiaoDich);
         return "benhvien";
+    }
+
+    @PostMapping("/themBenhNhan")
+    public String themBenhNhan(@RequestParam String ten, @RequestParam String soDienThoai) {
+        BenhNhan benhNhan = new BenhNhan(ten, soDienThoai);
+        danhSachBenhNhan.add(benhNhan);
+        return "redirect:/benhvien";
+    }
+
+    @PostMapping("/themPhongKham")
+    public String themPhongKham(@RequestParam String tenPhong, @RequestParam String chuyenKhoa) {
+        PhongKham phongKham = new PhongKham(tenPhong, chuyenKhoa);
+        danhSachPhongKham.add(phongKham);
+        return "redirect:/benhvien";
+    }
+
+    @PostMapping("/themGiaoDich")
+    public String themGiaoDich(
+            @RequestParam int benhNhanIndex,
+            @RequestParam int phongKhamIndex,
+            @RequestParam String ngayHen,
+            @RequestParam String gioHen,
+            @RequestParam(required = false) String ghiChu) {
+        
+        if (benhNhanIndex >= 0 && benhNhanIndex < danhSachBenhNhan.size() &&
+            phongKhamIndex >= 0 && phongKhamIndex < danhSachPhongKham.size()) {
+            
+            BenhNhan benhNhan = danhSachBenhNhan.get(benhNhanIndex);
+            PhongKham phongKham = danhSachPhongKham.get(phongKhamIndex);
+            String thoiGian = ngayHen + " " + gioHen;
+            
+            GiaoDich giaoDich = new GiaoDich(benhNhan, phongKham, thoiGian, ghiChu);
+            danhSachGiaoDich.add(giaoDich);
+        }
+        
+        return "redirect:/benhvien";
+    }
+
+    @GetMapping("/xoaBenhNhan/{index}")
+    public String xoaBenhNhan(@PathVariable int index) {
+        if (index >= 0 && index < danhSachBenhNhan.size()) {
+            danhSachBenhNhan.remove(index);
+        }
+        return "redirect:/benhvien";
+    }
+
+    @GetMapping("/xoaPhongKham/{index}")
+    public String xoaPhongKham(@PathVariable int index) {
+        if (index >= 0 && index < danhSachPhongKham.size()) {
+            danhSachPhongKham.remove(index);
+        }
+        return "redirect:/benhvien";
+    }
+
+    // Các lớp model
+    public static class BenhNhan {
+        private String ten;
+        private String soDienThoai;
+
+        public BenhNhan(String ten, String soDienThoai) {
+            this.ten = ten;
+            this.soDienThoai = soDienThoai;
+        }
+
+        public String getTen() { return ten; }
+        public String getSoDienThoai() { return soDienThoai; }
+    }
+
+    public static class PhongKham {
+        private String tenPhong;
+        private String chuyenKhoa;
+
+        public PhongKham(String tenPhong, String chuyenKhoa) {
+            this.tenPhong = tenPhong;
+            this.chuyenKhoa = chuyenKhoa;
+        }
+
+        public String getTenPhong() { return tenPhong; }
+        public String getChuyenKhoa() { return chuyenKhoa; }
+    }
+
+    public static class GiaoDich {
+        private BenhNhan benhNhan;
+        private PhongKham phongKham;
+        private String thoiGian;
+        private String ghiChu;
+
+        public GiaoDich(BenhNhan benhNhan, PhongKham phongKham, String thoiGian, String ghiChu) {
+            this.benhNhan = benhNhan;
+            this.phongKham = phongKham;
+            this.thoiGian = thoiGian;
+            this.ghiChu = ghiChu;
+        }
+
+        public BenhNhan getBenhNhan() { return benhNhan; }
+        public PhongKham getPhongKham() { return phongKham; }
+        public String getThoiGian() { return thoiGian; }
+        public String getGhiChu() { return ghiChu; }
     }
 }
