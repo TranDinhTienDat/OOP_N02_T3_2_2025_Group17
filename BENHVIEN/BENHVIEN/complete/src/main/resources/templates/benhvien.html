@@ -180,6 +180,66 @@
             font-size: 0.875em;
         }
     </style>
+
+    <!-- === MÌNH CHÈN STYLE MỚI Ở ĐÂY (KHÔNG SỬA GÌ CSS CŨ) === -->
+    <style>
+        /* Hiệu ứng toàn trang khi load */
+        body {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hover nhẹ cho logo */
+        .logo:hover {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+        }
+
+        /* Tab fade khi chuyển tab */
+        .tab-pane {
+            animation: fadeTab 0.35s ease-in-out;
+        }
+        @keyframes fadeTab {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Nút mượt hơn */
+        .btn {
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Bóng hover cho hàng bảng + nhẹ nâng */
+        .table-hover tbody tr {
+            transition: background-color 0.18s ease, transform 0.12s ease;
+        }
+        .table-hover tbody tr:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Hiệu ứng highlight khi thêm mới */
+        .highlight {
+            animation: highlightFade 2s ease-in-out;
+        }
+        @keyframes highlightFade {
+            0% { background-color: #fff3cd; }
+            35% { background-color: #fff8e1; }
+            100% { background-color: transparent; }
+        }
+
+        /* Focus rõ cho accessibility */
+        .form-control:focus, .form-select:focus, .btn:focus {
+            outline: 3px solid rgba(74,107,255,0.12);
+            outline-offset: 2px;
+            box-shadow: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Header Section -->
@@ -532,6 +592,48 @@
                 });
             }
         });
+    </script>
+
+    <!-- === MÌNH CHÈN SCRIPT MỚI Ở ĐÂY (KHÔNG SỬA GÌ JS CŨ) === -->
+    <script>
+        // Khởi tạo tooltip cho các phần tử có data-bs-toggle="tooltip"
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function (el) {
+                    new bootstrap.Tooltip(el);
+                });
+            } catch (e) {
+                // Nếu không có bootstrap hoặc gặp lỗi thì bỏ qua
+                console.warn('Tooltip init error (safe to ignore):', e);
+            }
+
+            // Khi submit form (client-side), highlight hàng mới tạm thời (nếu có)
+            const pForm = document.getElementById('patientForm');
+            if (pForm) {
+                pForm.addEventListener('submit', function() {
+                    // nếu site xử lý AJAX thì sẽ không reload, highlight sẽ hiển thị
+                    setTimeout(function(){ highlightNewRow('#patients .table'); }, 250);
+                });
+            }
+            const cForm = document.getElementById('clinicForm');
+            if (cForm) {
+                cForm.addEventListener('submit', function() {
+                    setTimeout(function(){ highlightNewRow('#clinics .table'); }, 250);
+                });
+            }
+        });
+
+        // Hàm thêm lớp highlight cho hàng đầu tiên của bảng (non-invasive)
+        function highlightNewRow(tableSelector) {
+            const table = document.querySelector(tableSelector);
+            if (!table) return;
+            const firstRow = table.querySelector('tbody tr');
+            if (firstRow) {
+                firstRow.classList.add('highlight');
+                setTimeout(function(){ firstRow.classList.remove('highlight'); }, 2000);
+            }
+        }
     </script>
 </body>
 </html>
