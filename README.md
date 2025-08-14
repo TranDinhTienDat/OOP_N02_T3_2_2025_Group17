@@ -44,6 +44,10 @@ Chức năng chính:
 
 🔍 Tìm kiếm bệnh nhân
 
+Hình Ảnh Sơ Đồ Thuật Toán của Phòng Khám 
+
+ <img src='anh/PhongKham (1).jpg'>
+
 💰 4. Giao dịch (Billing)
 
 Thuộc tính	
@@ -64,4 +68,9 @@ Chức năng chính:
 
 🧾 Xuất hóa đơn
 
-   <img src='anh/PhongKham (1).jpg'>
+  
+Link Public : https://turbo-waffle-x54ppx7x65x936wg5-8080.app.github.dev/benhvien 
+
+Link codespaces : https://github.com/codespaces/turbo-waffle-x54ppx7x65x936wg5 
+
+Link Demo Team : 
