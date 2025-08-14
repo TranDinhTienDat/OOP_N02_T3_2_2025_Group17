@@ -68,6 +68,14 @@ Chức năng chính:
 
 🧾 Xuất hóa đơn
 
+Thành Viên 
+
+| STT | Họ và Tên              | MSSV     | GitHub ID                                             |
+| --- | ---------------------- | -------- | ----------------------------------------------------- |
+| 1   | **Trần Đình Tiến Đạt** | 24100257 | [TranDinhTienDat](https://github.com/TranDinhTienDat) |
+| 2   | **Cao Tiến Duy**       | 24100487 | [duyneme](https://github.com/duyneme)                 |
+| 3   | **Nguyễn Văn Hào**     | 24100450 | [haonguyen06](https://github.com/haonguyen06)         |
+
   
 Link Public : https://turbo-waffle-x54ppx7x65x936wg5-8080.app.github.dev/benhvien 
 
