@@ -16,17 +16,25 @@ Theo dõi và quản lý giao dịch thanh toán.
 
 🧍‍♂️ 2. Bệnh nhân (Patient)
 
-Thuộc tính	Kiểu dữ liệu	Mô tả
+Thuộc tính	
+
 🆔 ma	String	Mã định danh bệnh nhân (duy nhất)
+
 📝 ten	String	Họ và tên bệnh nhân
+
 🎂 tuoi	Integer	Tuổi
+
 ⚧ gioi_tinh	String	Giới tính (Nam / Nữ / Khác)
 
 🏥 3. Phòng khám / Bệnh viện (Hospital / Clinic)
 
-Thuộc tính	Kiểu dữ liệu	Mô tả
+Thuộc tính	
+
 🏷 ten_co_so	String	Tên bệnh viện hoặc phòng khám
-📋 danh_sach_benh_nhan	List<Patient>	Danh sách bệnh nhân đang được quản lý
+
+📋 danh_sach_benh_nhan	List<Patient>	
+
+Danh sách bệnh nhân đang được quản lý
 
 Chức năng chính:
 
@@ -38,10 +46,14 @@ Chức năng chính:
 
 💰 4. Giao dịch (Billing)
 
-Thuộc tính	Kiểu dữ liệu	Mô tả
+Thuộc tính	
+
 🆔 ma_giao_dich	String	Mã định danh giao dịch
+
 🔗 ma_benh_nhan	String	Liên kết đến Patient.ma
+
 💵 so_tien	Float	Số tiền giao dịch
+
 📅 ngay_giao_dich	Date	Ngày thanh toán
 
 Chức năng chính:
