@@ -1,2007 +1,1161 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Bệnh Viện</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        :root {
-            --primary-color: #4a6bff;
-            --secondary-color: #ff7e5f;
-            --dark-color: #2c3e50;
-            --light-color: #f8f9fa;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-            --sidebar-width: 280px;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7ff;
-            color: var(--dark-color);
-            overflow-x: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1.5rem 0;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 10;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .main-title {
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            margin-top: 0.5rem;
-            font-size: 1.8rem;
-        }
-        
-        .nav-tabs {
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-        }
-        
-        .nav-tabs .nav-link {
-            font-weight: 600;
-            color: var(--dark-color);
-            border: none;
-            padding: 12px 20px;
-            position: relative;
-            transition: all 0.3s;
-        }
-        
-        .nav-tabs .nav-link:hover {
-            color: var(--primary-color);
-        }
-        
-        .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            background-color: transparent;
-        }
-        
-        .nav-tabs .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--primary-color);
-            border-radius: 3px 3px 0 0;
-        }
-        
-        .tab-content {
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-            animation: fadeIn 0.4s ease-out;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-control, .form-select {
-            border-radius: 8px;
-            padding: 10px 15px;
-            border: 1px solid #e0e0e0;
-            transition: all 0.3s;
-            box-shadow: none;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(74, 107, 255, 0.15);
-        }
-        
-        .btn {
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn i {
-            margin-right: 8px;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-        }
-        
-        .btn-primary:hover {
-            background-color: #3a5bef;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            border: none;
-        }
-        
-        .btn-danger {
-            background-color: var(--danger-color);
-            border: none;
-        }
-        
-        .btn-warning {
-            background-color: var(--warning-color);
-            border: none;
-            color: #212529;
-        }
-        
-        .btn-info {
-            background-color: var(--info-color);
-            border: none;
-        }
-        
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 0.875rem;
-        }
-        
-        .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .table {
-            margin-bottom: 0;
-            font-size: 0.95rem;
-        }
-        
-        .table th {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            padding: 12px 15px;
-            vertical-align: middle;
-        }
-        
-        .table td {
-            padding: 12px 15px;
-            vertical-align: middle;
-        }
-        
-        .table-hover tbody tr {
-            transition: all 0.2s ease;
-        }
-        
-        .table-hover tbody tr:hover {
-            background-color: rgba(74, 107, 255, 0.05);
-            transform: translateX(4px);
-        }
-        
-        .status-active {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: var(--success-color);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-        
-        .status-inactive {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--danger-color);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-        
-        .status-pending {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: var(--warning-color);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            display: inline-block;
-        }
-        
-        .form-container {
-            background-color: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-        }
-        
-        .was-validated .form-control:invalid, .form-control.is-invalid {
-            border-color: var(--danger-color);
-        }
-        
-        .invalid-feedback {
-            color: var(--danger-color);
-            font-size: 0.875em;
-            margin-top: 0.25rem;
-        }
-        
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-        }
-        
-        .stat-card {
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 15px;
-            color: white;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .stat-card i {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        
-        .stat-card .count {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        
-        .stat-card .label {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .patients-card {
-            background: linear-gradient(135deg, #4a6bff, #6a8cff);
-        }
-        
-        .clinics-card {
-            background: linear-gradient(135deg, #ff7e5f, #ff9e7f);
-        }
-        
-        .appointments-card {
-            background: linear-gradient(135deg, #28a745, #48c765);
-        }
-        
-        .today-card {
-            background: linear-gradient(135deg, #17a2b8, #37c2d8);
-        }
-        
-        .search-box {
-            position: relative;
-            margin-bottom: 1.5rem;
-        }
-        
-        .search-box input {
-            padding-left: 40px;
-            border-radius: 50px;
-        }
-        
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
-        
-        .badge-notification {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 0.6rem;
-            padding: 3px 6px;
-        }
-        
-        .user-profile {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            background-color: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s;
-        }
-        
-        .user-profile:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-right: 10px;
-            border: 2px solid white;
-        }
-        
-        .user-name {
-            font-weight: 600;
-            margin-right: 10px;
-            color: white;
-        }
-        
-        .dropdown-menu {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 0.5rem 0;
-        }
-        
-        .dropdown-item {
-            padding: 0.5rem 1.5rem;
-            transition: all 0.2s;
-        }
-        
-        .dropdown-item:hover {
-            background-color: rgba(74, 107, 255, 0.1);
-            color: var(--primary-color);
-        }
-        
-        .modal-content {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .modal-header {
-            background-color: var(--primary-color);
-            color: white;
-            border-bottom: none;
-            padding: 1.2rem 1.5rem;
-        }
-        
-        .modal-title {
-            font-weight: 600;
-        }
-        
-        .modal-footer {
-            border-top: none;
-            padding: 1rem 1.5rem;
-        }
-        
-        .btn-close {
-            filter: invert(1);
-        }
-        
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1100;
-        }
-        
-        .toast {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        .toast-header {
-            border-bottom: none;
-            font-weight: 600;
-        }
-        
-        .toast-success .toast-header {
-            background-color: rgba(40, 167, 69, 0.2);
-            color: var(--success-color);
-        }
-        
-        .toast-error .toast-header {
-            background-color: rgba(220, 53, 69, 0.2);
-            color: var(--danger-color);
-        }
-        
-        .toast-warning .toast-header {
-            background-color: rgba(255, 193, 7, 0.2);
-            color: var(--warning-color);
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-bottom: 2rem;
-        }
-        
-        .action-buttons .btn {
-            margin-right: 5px;
-            margin-bottom: 5px;
-        }
-        
-        @media (max-width: 768px) {
-            .header {
-                padding: 1rem 0;
-            }
-            
-            .main-title {
-                font-size: 1.5rem;
-            }
-            
-            .logo {
-                width: 60px;
-                height: 60px;
-            }
-            
-            .nav-tabs .nav-link {
-                padding: 10px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .tab-content {
-                padding: 1.5rem;
-            }
-            
-            .stat-card {
-                padding: 1rem;
-            }
-            
-            .stat-card .count {
-                font-size: 1.5rem;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes fadeTab {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes highlightFade {
-            0% { background-color: #fff3cd; }
-            35% { background-color: #fff8e1; }
-            100% { background-color: transparent; }
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3a5bef;
-        }
-        
-        /* Print styles */
-        @media print {
-            .no-print, .header, .nav-tabs, .btn, .search-box, .modal, .toast-container {
-                display: none !important;
-            }
-            
-            body {
-                background-color: white;
-                color: black;
-                font-size: 12pt;
-            }
-            
-            .table {
-                font-size: 10pt;
-            }
-            
-            .table th {
-                background-color: #f8f9fa !important;
-                color: black !important;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bệnh Viện  - Hệ thống quản lý</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --card-bg-color: #ffffff;
+      --primary-color: #2d6cdf;
+      --accent-color: #22a699;
+      --text-dark: #1f2937;
+      --text-muted: #6b7280;
+      --border-color: rgba(0, 0, 0, 0.1);
+    }
+    * { box-sizing: border-box; }
+    body { background: var(--bg-color); color: var(--text-dark); font-family: 'Poppins', sans-serif; }
+    .container-fluid { padding: 24px; }
+    .header-logo { font-size: 2.2rem; font-weight: 700; color: var(--text-dark); display:flex; align-items:center; gap:12px; justify-content:center; margin-bottom: 18px;}
+    .header-logo i { color: var(--primary-color); }
+    .tab-content { background: var(--card-bg-color); padding: 24px; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.08); min-height: 78vh;}
+    .nav-tabs { border-bottom: 2px solid var(--border-color); margin-bottom: 18px;}
+    .nav-tabs .nav-link { color: var(--text-muted); font-weight: 600; border: none; border-bottom: 3px solid transparent; margin-bottom:-2px; }
+    .nav-tabs .nav-link.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+    .card { background: var(--card-bg-color); border: 1px solid var(--border-color); }
+    .form-control, .form-select { background: #f7f7fb; border: 1px solid var(--border-color); }
+    .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 .25rem rgba(45,108,223,.15); }
+    .badge-soft { background: #eef2ff; color: #3b82f6; border:1px solid #dbeafe; }
+    .btn-primary { background: var(--primary-color); border-color: var(--primary-color); }
+    .btn-primary:hover { filter: brightness(.95); }
+    .btn-success { background: var(--accent-color); border-color: var(--accent-color); }
+    .stat-card { border: 0; border-radius: 14px; color: #fff; overflow: hidden; }
+    .stat-card .card-body { display:flex; align-items:center; justify-content:space-between; }
+    .stat-card i { opacity: .9; }
+    .table > :not(caption) > * > * { border-bottom-color: var(--border-color); }
+    .room-card { border-radius: 12px; transition: .2s; overflow:hidden; border:1px solid var(--border-color); }
+    .room-card:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(0,0,0,.06); }
+    .room-card .card-header { display:flex; align-items:center; justify-content:space-between; }
+    .room-free { background:#ecfdf5; }
+    .room-occupied { background:#fef3c7; }
+    .room-maintenance { background:#fee2e2; }
+    .status-badge { padding:6px 10px; border-radius:20px; font-weight:700; font-size:.8rem; }
+    .status-free { background:#10b981; color:#fff; }
+    .status-occupied { background:#f59e0b; color:#fff; }
+    .status-maintenance { background:#ef4444; color:#fff; }
+    /* Mini chart bars */
+    .chart-area { height: 220px; display:flex; align-items:flex-end; gap:18px; }
+    .bar { width: 40px; border-radius:6px 6px 0 0; background: var(--primary-color); position:relative; }
+    .bar .value { position:absolute; top:-22px; left:50%; transform:translateX(-50%); font-size:.8rem; }
+    .bar .label { position:absolute; bottom:-24px; left:50%; transform:translateX(-50%); font-size:.8rem; color:var(--text-muted); }
+    .customer-card-item { background: var(--card-bg-color); border:1px solid var(--border-color); border-radius:12px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,.04); }
+    .customer-card-item:hover { box-shadow:0 10px 22px rgba(0,0,0,.08); }
+    .modal-content { background: var(--card-bg-color); }
+  </style>
 </head>
 <body>
-    <!-- Header Section -->
-    <header class="header">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2969/2969398.png" alt="Logo Bệnh Viện" class="logo me-3">
-                    <div>
-                        <h1 class="main-title mb-0">HỆ THỐNG QUẢN LÝ BỆNH VIỆN</h1>
-                        <p class="mb-0 d-none d-md-block">Quản lý bệnh nhân, phòng khám và lịch hẹn chuyên nghiệp</p>
-                    </div>
-                </div>
-                
-                <div class="dropdown">
-                    <div class="user-profile dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=4a6bff&color=fff" alt="User Avatar" class="user-avatar">
-                        <span class="user-name d-none d-md-inline">Admin</span>
-                        <i class="fas fa-chevron-down text-white"></i>
-                    </div>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Thông tin tài khoản</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Cài đặt</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt me-2"></i>Đăng xuất</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </header>
+<div class="container-fluid">
+  <div class="text-center header-logo">
+    <i class="fa-solid fa-hospital"></i> Bệnh viện 
+  </div>
 
-    <!-- Main Content -->
-    <div class="container">
-        <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="stat-card patients-card">
-                    <i class="fas fa-user-injured"></i>
-                    <div class="count" th:text="${danhSachBenhNhan.size()}">0</div>
-                    <div class="label">Bệnh nhân</div>
-                </div>
+  <!-- TABS -->
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+        <i class="fa-solid fa-gauge me-2"></i>Tổng quan
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="patient-tab" data-bs-toggle="tab" data-bs-target="#patients" type="button" role="tab">
+        <i class="fa-solid fa-bed-pulse me-2"></i>Bệnh nhân
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="doctor-tab" data-bs-toggle="tab" data-bs-target="#doctors" type="button" role="tab">
+        <i class="fa-solid fa-user-doctor me-2"></i>Bác sĩ
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="room-tab" data-bs-toggle="tab" data-bs-target="#rooms" type="button" role="tab">
+        <i class="fa-solid fa-hospital-user me-2"></i>Phòng bệnh
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="service-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab">
+        <i class="fa-solid fa-flask-vial me-2"></i>Dịch vụ
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+        <i class="fa-solid fa-clock-rotate-left me-2"></i>Lịch sử khám
+      </a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#statistics" type="button" role="tab">
+        <i class="fa-solid fa-chart-line me-2"></i>Thống kê
+      </a>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="myTabContent">
+    <!-- DASHBOARD -->
+    <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+      <div class="row g-3">
+        <div class="col-lg-4">
+          <div class="card p-3 shadow-sm">
+            <h5 class="card-title text-primary"><i class="fa-solid fa-notes-medical me-2"></i>Tiếp nhận/nhập viện</h5>
+            <form id="admitForm">
+              <div class="mb-2">
+                <label class="form-label">Tên bệnh nhân</label>
+                <input type="text" class="form-control" id="admitName" required placeholder="VD: Trần Minh Khoa">
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Số điện thoại</label>
+                <input type="tel" class="form-control" id="admitPhone" required placeholder="VD: 0912345678" pattern="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$">
+                <div class="invalid-feedback">SĐT không hợp lệ.</div>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Bác sĩ phụ trách</label>
+                <select id="admitDoctorId" class="form-select" required></select>
+              </div>
+              <div class="mb-2">
+                <label class="form-label">Chọn phòng/giường</label>
+                <select id="admitRoomId" class="form-select" required></select>
+              </div>
+            </form>
+            <h6 class="mt-3 text-primary"><i class="fa-solid fa-flask me-2"></i>Chỉ định dịch vụ</h6>
+            <div id="admitServices"></div>
+            <hr>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" onclick="startAdmission()"><i class="fa-solid fa-person-circle-plus me-2"></i>Bắt đầu điều trị</button>
+              <button class="btn btn-secondary" onclick="resetAdmitForm()"><i class="fa-solid fa-rotate me-2"></i>Đặt lại</button>
             </div>
-            <div class="col-md-3">
-                <div class="stat-card clinics-card">
-                    <i class="fas fa-clinic-medical"></i>
-                    <div class="count" th:text="${danhSachPhongKham.size()}">0</div>
-                    <div class="label">Phòng khám</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card appointments-card">
-                    <i class="fas fa-calendar-check"></i>
-                    <div class="count" th:text="${danhSachGiaoDich.size()}">0</div>
-                    <div class="label">Lịch hẹn</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card today-card pulse">
-                    <i class="fas fa-clock"></i>
-                    <div class="count" th:text="${lichHenHomNay != null ? lichHenHomNay.size() : 0}">0</div>
-                    <div class="label">Hẹn hôm nay</div>
-                </div>
-            </div>
+          </div>
         </div>
-        
-        <!-- Navigation Tabs -->
-        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="patients-tab" data-bs-toggle="tab" data-bs-target="#patients" type="button" role="tab">
-                    <i class="fas fa-user-injured me-2"></i>Bệnh nhân
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="clinics-tab" data-bs-toggle="tab" data-bs-target="#clinics" type="button" role="tab">
-                    <i class="fas fa-clinic-medical me-2"></i>Phòng khám
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="appointments-tab" data-bs-toggle="tab" data-bs-target="#appointments" type="button" role="tab">
-                    <i class="fas fa-calendar-check me-2"></i>Lịch hẹn
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">
-                    <i class="fas fa-chart-bar me-2"></i>Báo cáo
-                </button>
-            </li>
-        </ul>
-        
-        <!-- Tab Contents -->
-        <div class="tab-content" id="myTabContent">
-            <!-- Patients Tab -->
-            <div class="tab-pane fade show active" id="patients" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3><i class="fas fa-user-injured me-2"></i>Quản lý Bệnh nhân</h3>
-                    <div>
-                        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addPatientModal">
-                            <i class="fas fa-plus me-2"></i>Thêm bệnh nhân
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="window.print()">
-                            <i class="fas fa-print me-2"></i>In danh sách
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="form-control" id="patientSearch" placeholder="Tìm kiếm bệnh nhân...">
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover" id="patientsTable">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên bệnh nhân</th>
-                                <th>Số điện thoại</th>
-                                <th>Địa chỉ</th>
-                                <th>Lần cuối khám</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="benhNhan, stat : ${danhSachBenhNhan}">
-                                <td th:text="${stat.index + 1}"></td>
-                                <td>
-                                    <div class="fw-bold" th:text="${benhNhan.ten}"></div>
-                                    <small class="text-muted" th:text="${benhNhan.ngaySinh} ? 'Ngày sinh: ' + ${benhNhan.ngaySinh} : 'Chưa cập nhật'"></small>
-                                </td>
-                                <td th:text="${benhNhan.soDienThoai}"></td>
-                                <td th:text="${benhNhan.diaChi} ? ${benhNhan.diaChi} : 'Chưa cập nhật'"></td>
-                                <td th:text="${benhNhan.lanCuoiKham} ? ${benhNhan.lanCuoiKham} : 'Chưa có dữ liệu'"></td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewPatientModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editPatientModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deletePatient(' + ${stat.index} + ')'">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Sau</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            
-            <!-- Clinics Tab -->
-            <div class="tab-pane fade" id="clinics" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3><i class="fas fa-clinic-medical me-2"></i>Quản lý Phòng khám</h3>
-                    <div>
-                        <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#addClinicModal">
-                            <i class="fas fa-plus me-2"></i>Thêm phòng khám
-                        </button>
-                        <button class="btn btn-outline-secondary" onclick="window.print()">
-                            <i class="fas fa-print me-2"></i>In danh sách
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="form-control" id="clinicSearch" placeholder="Tìm kiếm phòng khám...">
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover" id="clinicsTable">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên phòng</th>
-                                <th>Chuyên khoa</th>
-                                <th>Bác sĩ phụ trách</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="phongKham, stat : ${danhSachPhongKham}">
-                                <td th:text="${stat.index + 1}"></td>
-                                <td>
-                                    <div class="fw-bold" th:text="${phongKham.tenPhong}"></div>
-                                    <small class="text-muted" th:text="'Mã phòng: ' + ${phongKham.maPhong}"></small>
-                                </td>
-                                <td th:text="${phongKham.chuyenKhoa}"></td>
-                                <td th:text="${phongKham.bacSiPhuTrach} ? ${phongKham.bacSiPhuTrach} : 'Chưa chỉ định'"></td>
-                                <td>
-                                    <span th:class="${phongKham.trangThai == 'Hoạt động'} ? 'status-active' : 'status-inactive'" 
-                                          th:text="${phongKham.trangThai}"></span>
-                                </td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewClinicModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editClinicModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteClinic(' + ${stat.index} + ')'">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Appointments Tab -->
-            <div class="tab-pane fade" id="appointments" role="tabpanel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3><i class="fas fa-calendar-check me-2"></i>Quản lý Lịch hẹn</h3>
-                    <div>
-                        <button class="btn btn-outline-secondary me-2" onclick="window.print()">
-                            <i class="fas fa-print me-2"></i>In danh sách
-                        </button>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#quickAppointmentModal">
-                            <i class="fas fa-plus me-2"></i>Tạo lịch hẹn nhanh
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="search-box">
-                            <i class="fas fa-search"></i>
-                            <input type="text" class="form-control" id="appointmentSearch" placeholder="Tìm kiếm lịch hẹn...">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                            <input type="text" class="form-control" id="appointmentDateFilter" placeholder="Lọc theo ngày...">
-                            <button class="btn btn-outline-secondary" type="button" id="clearDateFilter">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-container mb-4">
-                    <h4><i class="fas fa-plus-circle me-2"></i>Tạo lịch hẹn mới</h4>
-                    <form id="appointmentForm" th:action="@{/themGiaoDich}" method="post" novalidate>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Bệnh nhân <span class="text-danger">*</span></label>
-                                <select class="form-select" name="benhNhanIndex" required>
-                                    <option value="" selected disabled>-- Chọn bệnh nhân --</option>
-                                    <option th:each="benhNhan, stat : ${danhSachBenhNhan}" 
-                                            th:value="${stat.index}"
-                                            th:text="${benhNhan.ten} + ' - ' + ${benhNhan.soDienThoai}">
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback">Vui lòng chọn bệnh nhân</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Phòng khám <span class="text-danger">*</span></label>
-                                <select class="form-select" name="phongKhamIndex" required>
-                                    <option value="" selected disabled>-- Chọn phòng khám --</option>
-                                    <option th:each="phongKham, stat : ${danhSachPhongKham}" 
-                                            th:value="${stat.index}"
-                                            th:text="${phongKham.tenPhong} + ' (' + ${phongKham.chuyenKhoa} + ')'">
-                                    </option>
-                                </select>
-                                <div class="invalid-feedback">Vui lòng chọn phòng khám</div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Ngày hẹn <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="ngayHen" required min="" th:attr="min=${ngayHienTai}">
-                                <div class="invalid-feedback">Vui lòng chọn ngày hẹn</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Giờ hẹn <span class="text-danger">*</span></label>
-                                <input type="time" class="form-control" name="gioHen" required>
-                                <div class="invalid-feedback">Vui lòng chọn giờ hẹn</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" name="ghiChu" rows="2" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Lưu lịch hẹn
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover" id="appointmentsTable">
-                        <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Bệnh nhân</th>
-                                <th>Phòng khám</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="giaoDich, stat : ${danhSachGiaoDich}">
-                                <td th:text="${stat.index + 1}"></td>
-                                <td>
-                                    <div class="fw-bold" th:text="${giaoDich.benhNhan.ten}"></div>
-                                    <small class="text-muted" th:text="${giaoDich.benhNhan.soDienThoai}"></small>
-                                </td>
-                                <td>
-                                    <div th:text="${giaoDich.phongKham.tenPhong}"></div>
-                                    <small class="text-muted" th:text="${giaoDich.phongKham.chuyenKhoa}"></small>
-                                </td>
-                                <td>
-                                    <div class="fw-bold" th:text="${giaoDich.thoiGian}"></div>
-                                    <small class="text-muted" th:text="${giaoDich.ngayHen}"></small>
-                                </td>
-                                <td>
-                                    <span th:class="${giaoDich.trangThai == 'Đã đặt'} ? 'status-active' : 
-                                          (${giaoDich.trangThai == 'Đã hủy'} ? 'status-inactive' : 'status-pending')" 
-                                          th:text="${giaoDich.trangThai}"></span>
-                                </td>
-                                <td class="action-buttons">
-                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewAppointmentModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editAppointmentModal" th:attr="data-bs-id=${stat.index}">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" th:onclick="'deleteAppointment(' + ${stat.index} + ')'">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Reports Tab -->
-            <div class="tab-pane fade" id="reports" role="tabpanel">
-                <h3 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Báo cáo & Thống kê</h3>
-                
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <i class="fas fa-chart-line me-2"></i>Thống kê lịch hẹn theo tháng
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="appointmentsChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <i class="fas fa-chart-pie me-2"></i>Phân bổ bệnh nhân theo chuyên khoa
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container">
-                                    <canvas id="specialtiesChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-table me-2"></i>Báo cáo lịch hẹn hôm nay
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>STT</th>
-                                        <th>Bệnh nhân</th>
-                                        <th>Phòng khám</th>
-                                        <th>Thời gian</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="lichHen, stat : ${lichHenHomNay}">
-                                        <td th:text="${stat.index + 1}"></td>
-                                        <td th:text="${lichHen.benhNhan.ten} + ' - ' + ${lichHen.benhNhan.soDienThoai}"></td>
-                                        <td th:text="${lichHen.phongKham.tenPhong} + ' (' + ${lichHen.phongKham.chuyenKhoa} + ')'"></td>
-                                        <td th:text="${lichHen.thoiGian}"></td>
-                                        <td><span class="status-active">Đã đặt</span></td>
-                                    </tr>
-                                    <tr th:if="${lichHenHomNay == null or lichHenHomNay.isEmpty()}">
-                                        <td colspan="5" class="text-center text-muted">Không có lịch hẹn nào hôm nay</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-footer text-end">
-                        <button class="btn btn-primary" onclick="window.print()">
-                            <i class="fas fa-print me-2"></i>In báo cáo
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-8">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h4 class="mb-0"><i class="fa-solid fa-bed me-2 text-primary"></i>Giường bệnh</h4>
+            <select id="sortRooms" class="form-select w-auto" onchange="renderDashboardRooms()">
+              <option value="default">Mặc định</option>
+              <option value="price_asc">Giá tăng dần</option>
+              <option value="price_desc">Giá giảm dần</option>
+            </select>
+          </div>
+          <div id="dashboardRooms" class="row g-3"></div>
         </div>
-    </div>
-    
-    <!-- Toast Notifications -->
-    <div class="toast-container">
-        <div class="toast toast-success" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
-            <div class="toast-header">
-                <strong class="me-auto">Thành công</strong>
-                <small>Vừa xong</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Thao tác đã được thực hiện thành công!
-            </div>
-        </div>
-        
-        <div class="toast toast-error" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
-            <div class="toast-header">
-                <strong class="me-auto">Lỗi</strong>
-                <small>Vừa xong</small>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                Đã xảy ra lỗi khi thực hiện thao tác!
-            </div>
-        </div>
-    </div>
-    
-    <!-- Add Patient Modal -->
-    <div class="modal fade" id="addPatientModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-user-plus me-2"></i>Thêm bệnh nhân mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="patientForm" th:action="@{/themBenhNhan}" method="post" novalidate>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="ten" required minlength="3">
-                                    <div class="invalid-feedback">Vui lòng nhập tên bệnh nhân (ít nhất 3 ký tự)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Ngày sinh</label>
-                                    <input type="date" class="form-control" name="ngaySinh">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Giới tính</label>
-                                    <select class="form-select" name="gioiTinh">
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="soDienThoai" required 
-                                           pattern="[0-9]{10}" title="Số điện thoại 10 chữ số">
-                                    <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ (10 chữ số)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Địa chỉ</label>
-                                    <input type="text" class="form-control" name="diaChi">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Bảo hiểm y tế</label>
-                                    <input type="text" class="form-control" name="baoHiemYTe" placeholder="Nhập số thẻ BHYT (nếu có)">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" name="ghiChu" rows="2" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Lưu bệnh nhân</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- View Patient Modal -->
-    <div class="modal fade" id="viewPatientModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-user me-2"></i>Thông tin bệnh nhân</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Patient Avatar" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                            <h4 id="viewPatientName">Nguyễn Văn A</h4>
-                            <span class="badge bg-primary" id="viewPatientId">ID: BN001</span>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="table-responsive">
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        <tr>
-                                            <th width="30%">Ngày sinh:</th>
-                                            <td id="viewPatientDob">01/01/1990</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Giới tính:</th>
-                                            <td id="viewPatientGender">Nam</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Số điện thoại:</th>
-                                            <td id="viewPatientPhone">0987654321</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Địa chỉ:</th>
-                                            <td id="viewPatientAddress">123 Đường ABC, Quận XYZ, TP.HCM</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Bảo hiểm y tế:</th>
-                                            <td id="viewPatientInsurance">BH123456789</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Lần cuối khám:</th>
-                                            <td id="viewPatientLastVisit">15/05/2023</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Ghi chú:</th>
-                                            <td id="viewPatientNotes">Không có ghi chú</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="printPatientInfo()"><i class="fas fa-print me-2"></i>In thông tin</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Edit Patient Modal -->
-    <div class="modal fade" id="editPatientModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-user-edit me-2"></i>Cập nhật bệnh nhân</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editPatientForm" th:action="@{/capNhatBenhNhan}" method="post" novalidate>
-                        <input type="hidden" name="patientIndex" id="editPatientIndex">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="ten" id="editPatientName" required minlength="3">
-                                    <div class="invalid-feedback">Vui lòng nhập tên bệnh nhân (ít nhất 3 ký tự)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Ngày sinh</label>
-                                    <input type="date" class="form-control" name="ngaySinh" id="editPatientDob">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Giới tính</label>
-                                    <select class="form-select" name="gioiTinh" id="editPatientGender">
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                        <option value="Khác">Khác</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="soDienThoai" id="editPatientPhone" required 
-                                           pattern="[0-9]{10}" title="Số điện thoại 10 chữ số">
-                                    <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ (10 chữ số)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Địa chỉ</label>
-                                    <input type="text" class="form-control" name="diaChi" id="editPatientAddress">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Bảo hiểm y tế</label>
-                                    <input type="text" class="form-control" name="baoHiemYTe" id="editPatientInsurance" placeholder="Nhập số thẻ BHYT (nếu có)">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" name="ghiChu" id="editPatientNotes" rows="2" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Cập nhật</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Add Clinic Modal -->
-    <div class="modal fade" id="addClinicModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-clinic-medical me-2"></i>Thêm phòng khám mới</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="clinicForm" th:action="@{/themPhongKham}" method="post" novalidate>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Mã phòng <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="maPhong" required>
-                                    <div class="invalid-feedback">Vui lòng nhập mã phòng</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Tên phòng <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="tenPhong" required minlength="3">
-                                    <div class="invalid-feedback">Vui lòng nhập tên phòng (ít nhất 3 ký tự)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Chuyên khoa <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="chuyenKhoa" required>
-                                    <div class="invalid-feedback">Vui lòng nhập chuyên khoa</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Bác sĩ phụ trách</label>
-                                    <input type="text" class="form-control" name="bacSiPhuTrach">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Trạng thái</label>
-                                    <select class="form-select" name="trangThai">
-                                        <option value="Hoạt động" selected>Hoạt động</option>
-                                        <option value="Bảo trì">Bảo trì</option>
-                                        <option value="Đóng cửa">Đóng cửa</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Mô tả</label>
-                                    <textarea class="form-control" name="moTa" rows="2" placeholder="Nhập mô tả phòng khám (nếu có)"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Lưu phòng khám</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- View Clinic Modal -->
-    <div class="modal fade" id="viewClinicModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-clinic-medical me-2"></i>Thông tin phòng khám</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4 text-center">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2969/2969398.png" alt="Clinic Image" class="img-fluid rounded mb-3" style="width: 150px; height: 150px; object-fit: cover;">
-                            <h4 id="viewClinicName">Phòng khám Nội tổng quát</h4>
-                            <span class="badge bg-primary" id="viewClinicId">PK001</span>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="table-responsive">
-                                <table class="table table-borderless">
-                                    <tbody>
-                                        <tr>
-                                            <th width="30%">Chuyên khoa:</th>
-                                            <td id="viewClinicSpecialty">Nội tổng quát</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Bác sĩ phụ trách:</th>
-                                            <td id="viewClinicDoctor">BS. Nguyễn Văn A</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Trạng thái:</th>
-                                            <td><span class="status-active" id="viewClinicStatus">Hoạt động</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Lịch làm việc:</th>
-                                            <td id="viewClinicSchedule">Thứ 2 - Thứ 6: 7h30 - 17h00</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Mô tả:</th>
-                                            <td id="viewClinicDescription">Phòng khám chuyên về nội tổng quát, khám và điều trị các bệnh lý thông thường.</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="printClinicInfo()"><i class="fas fa-print me-2"></i>In thông tin</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Edit Clinic Modal -->
-    <div class="modal fade" id="editClinicModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Cập nhật phòng khám</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editClinicForm" th:action="@{/capNhatPhongKham}" method="post" novalidate>
-                        <input type="hidden" name="clinicIndex" id="editClinicIndex">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Mã phòng <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="maPhong" id="editClinicCode" required>
-                                    <div class="invalid-feedback">Vui lòng nhập mã phòng</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Tên phòng <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="tenPhong" id="editClinicName" required minlength="3">
-                                    <div class="invalid-feedback">Vui lòng nhập tên phòng (ít nhất 3 ký tự)</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Chuyên khoa <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="chuyenKhoa" id="editClinicSpecialty" required>
-                                    <div class="invalid-feedback">Vui lòng nhập chuyên khoa</div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Bác sĩ phụ trách</label>
-                                    <input type="text" class="form-control" name="bacSiPhuTrach" id="editClinicDoctor">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Trạng thái</label>
-                                    <select class="form-select" name="trangThai" id="editClinicStatus">
-                                        <option value="Hoạt động">Hoạt động</option>
-                                        <option value="Bảo trì">Bảo trì</option>
-                                        <option value="Đóng cửa">Đóng cửa</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Mô tả</label>
-                                    <textarea class="form-control" name="moTa" id="editClinicDescription" rows="2" placeholder="Nhập mô tả phòng khám (nếu có)"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Cập nhật</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Quick Appointment Modal -->
-    <div class="modal fade" id="quickAppointmentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-calendar-plus me-2"></i>Tạo lịch hẹn nhanh</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="quickAppointmentForm" th:action="@{/themGiaoDichNhanh}" method="post" novalidate>
-                        <div class="mb-3">
-                            <label class="form-label">Bệnh nhân <span class="text-danger">*</span></label>
-                            <select class="form-select" name="benhNhanIndex" required>
-                                <option value="" selected disabled>-- Chọn bệnh nhân --</option>
-                                <option th:each="benhNhan, stat : ${danhSachBenhNhan}" 
-                                        th:value="${stat.index}"
-                                        th:text="${benhNhan.ten} + ' - ' + ${benhNhan.soDienThoai}">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback">Vui lòng chọn bệnh nhân</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phòng khám <span class="text-danger">*</span></label>
-                            <select class="form-select" name="phongKhamIndex" required>
-                                <option value="" selected disabled>-- Chọn phòng khám --</option>
-                                <option th:each="phongKham, stat : ${danhSachPhongKham}" 
-                                        th:value="${stat.index}"
-                                        th:text="${phongKham.tenPhong} + ' (' + ${phongKham.chuyenKhoa} + ')'">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback">Vui lòng chọn phòng khám</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Thời gian <span class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control" name="thoiGian" required min="" th:attr="min=${ngayHienTai} + 'T00:00'">
-                            <div class="invalid-feedback">Vui lòng chọn thời gian hợp lệ</div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Lưu lịch hẹn</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- View Appointment Modal -->
-    <div class="modal fade" id="viewAppointmentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-calendar-check me-2"></i>Chi tiết lịch hẹn</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-borderless">
-                            <tbody>
-                                <tr>
-                                    <th width="40%">Mã lịch hẹn:</th>
-                                    <td id="viewAppointmentId">LH001</td>
-                                </tr>
-                                <tr>
-                                    <th>Bệnh nhân:</th>
-                                    <td id="viewAppointmentPatient">Nguyễn Văn A - 0987654321</td>
-                                </tr>
-                                <tr>
-                                    <th>Phòng khám:</th>
-                                    <td id="viewAppointmentClinic">Phòng khám Nội tổng quát (Nội tổng quát)</td>
-                                </tr>
-                                <tr>
-                                    <th>Thời gian:</th>
-                                    <td id="viewAppointmentTime">14:00, 20/05/2023</td>
-                                </tr>
-                                <tr>
-                                    <th>Trạng thái:</th>
-                                    <td><span class="status-active" id="viewAppointmentStatus">Đã đặt</span></td>
-                                </tr>
-                                <tr>
-                                    <th>Ngày tạo:</th>
-                                    <td id="viewAppointmentCreated">18/05/2023 09:30</td>
-                                </tr>
-                                <tr>
-                                    <th>Ghi chú:</th>
-                                    <td id="viewAppointmentNotes">Không có ghi chú</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                    <button type="button" class="btn btn-primary" onclick="printAppointmentInfo()"><i class="fas fa-print me-2"></i>In thông tin</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Edit Appointment Modal -->
-    <div class="modal fade" id="editAppointmentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-calendar-edit me-2"></i>Cập nhật lịch hẹn</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editAppointmentForm" th:action="@{/capNhatGiaoDich}" method="post" novalidate>
-                        <input type="hidden" name="appointmentIndex" id="editAppointmentIndex">
-                        <div class="mb-3">
-                            <label class="form-label">Bệnh nhân <span class="text-danger">*</span></label>
-                            <select class="form-select" name="benhNhanIndex" id="editAppointmentPatient" required>
-                                <option value="" selected disabled>-- Chọn bệnh nhân --</option>
-                                <option th:each="benhNhan, stat : ${danhSachBenhNhan}" 
-                                        th:value="${stat.index}"
-                                        th:text="${benhNhan.ten} + ' - ' + ${benhNhan.soDienThoai}">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback">Vui lòng chọn bệnh nhân</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phòng khám <span class="text-danger">*</span></label>
-                            <select class="form-select" name="phongKhamIndex" id="editAppointmentClinic" required>
-                                <option value="" selected disabled>-- Chọn phòng khám --</option>
-                                <option th:each="phongKham, stat : ${danhSachPhongKham}" 
-                                        th:value="${stat.index}"
-                                        th:text="${phongKham.tenPhong} + ' (' + ${phongKham.chuyenKhoa} + ')'">
-                                </option>
-                            </select>
-                            <div class="invalid-feedback">Vui lòng chọn phòng khám</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Thời gian <span class="text-danger">*</span></label>
-                            <input type="datetime-local" class="form-control" name="thoiGian" id="editAppointmentTime" required min="" th:attr="min=${ngayHienTai} + 'T00:00'">
-                            <div class="invalid-feedback">Vui lòng chọn thời gian hợp lệ</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Trạng thái</label>
-                            <select class="form-select" name="trangThai" id="editAppointmentStatus">
-                                <option value="Đã đặt">Đã đặt</option>
-                                <option value="Đã hoàn thành">Đã hoàn thành</option>
-                                <option value="Đã hủy">Đã hủy</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Ghi chú</label>
-                            <textarea class="form-control" name="ghiChu" id="editAppointmentNotes" rows="2" placeholder="Nhập ghi chú (nếu có)"></textarea>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-2"></i>Đóng</button>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i>Cập nhật</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        // Xử lý validate form
-        (function() {
-            'use strict';
-            
-            // Lấy tất cả các form cần validate
-            const forms = document.querySelectorAll('.needs-validation');
-            
-            // Lặp lại và ngăn chặn submit nếu không hợp lệ
-            Array.from(forms).forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-            
-            // Validate form thêm bệnh nhân
-            const patientForm = document.getElementById('patientForm');
-            if (patientForm) {
-                patientForm.addEventListener('submit', function(event) {
-                    if (!patientForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    patientForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form thêm phòng khám
-            const clinicForm = document.getElementById('clinicForm');
-            if (clinicForm) {
-                clinicForm.addEventListener('submit', function(event) {
-                    if (!clinicForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    clinicForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form lịch hẹn
-            const appointmentForm = document.getElementById('appointmentForm');
-            if (appointmentForm) {
-                appointmentForm.addEventListener('submit', function(event) {
-                    if (!appointmentForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    appointmentForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form lịch hẹn nhanh
-            const quickAppointmentForm = document.getElementById('quickAppointmentForm');
-            if (quickAppointmentForm) {
-                quickAppointmentForm.addEventListener('submit', function(event) {
-                    if (!quickAppointmentForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    quickAppointmentForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form chỉnh sửa bệnh nhân
-            const editPatientForm = document.getElementById('editPatientForm');
-            if (editPatientForm) {
-                editPatientForm.addEventListener('submit', function(event) {
-                    if (!editPatientForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    editPatientForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form chỉnh sửa phòng khám
-            const editClinicForm = document.getElementById('editClinicForm');
-            if (editClinicForm) {
-                editClinicForm.addEventListener('submit', function(event) {
-                    if (!editClinicForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    editClinicForm.classList.add('was-validated');
-                });
-            }
-            
-            // Validate form chỉnh sửa lịch hẹn
-            const editAppointmentForm = document.getElementById('editAppointmentForm');
-            if (editAppointmentForm) {
-                editAppointmentForm.addEventListener('submit', function(event) {
-                    if (!editAppointmentForm.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    editAppointmentForm.classList.add('was-validated');
-                });
-            }
-        })();
-        
-        // Xử lý xóa bệnh nhân
-        function deletePatient(index) {
-            if (confirm('Bạn có chắc chắn muốn xóa bệnh nhân này?')) {
-                window.location.href = '/xoaBenhNhan/' + index;
-            }
-        }
-        
-        // Xử lý xóa phòng khám
-        function deleteClinic(index) {
-            if (confirm('Bạn có chắc chắn muốn xóa phòng khám này?')) {
-                window.location.href = '/xoaPhongKham/' + index;
-            }
-        }
-        
-        // Xử lý xóa lịch hẹn
-        function deleteAppointment(index) {
-            if (confirm('Bạn có chắc chắn muốn xóa lịch hẹn này?')) {
-                window.location.href = '/xoaGiaoDich/' + index;
-            }
-        }
-        
-        // Tự động đóng modal sau khi submit thành công
-        document.addEventListener('DOMContentLoaded', function() {
-            // Bệnh nhân
-            const patientModal = document.getElementById('addPatientModal');
-            if (patientModal) {
-                patientModal.addEventListener('hidden.bs.modal', function() {
-                    const form = document.getElementById('patientForm');
-                    if (form) {
-                        form.reset();
-                        form.classList.remove('was-validated');
-                    }
-                });
-            }
-            
-            // Phòng khám
-            const clinicModal = document.getElementById('addClinicModal');
-            if (clinicModal) {
-                clinicModal.addEventListener('hidden.bs.modal', function() {
-                    const form = document.getElementById('clinicForm');
-                    if (form) {
-                        form.reset();
-                        form.classList.remove('was-validated');
-                    }
-                });
-            }
-            
-            // Lịch hẹn nhanh
-            const quickAppointmentModal = document.getElementById('quickAppointmentModal');
-            if (quickAppointmentModal) {
-                quickAppointmentModal.addEventListener('hidden.bs.modal', function() {
-                    const form = document.getElementById('quickAppointmentForm');
-                    if (form) {
-                        form.reset();
-                        form.classList.remove('was-validated');
-                    }
-                });
-            }
-            
-            // Khởi tạo flatpickr cho lọc ngày
-            if (document.getElementById('appointmentDateFilter')) {
-                flatpickr("#appointmentDateFilter", {
-                    dateFormat: "d/m/Y",
-                    allowInput: true,
-                    onClose: function(selectedDates, dateStr, instance) {
-                        filterAppointmentsByDate(dateStr);
-                    }
-                });
-            }
-            
-            // Xử lý nút xóa lọc ngày
-            if (document.getElementById('clearDateFilter')) {
-                document.getElementById('clearDateFilter').addEventListener('click', function() {
-                    document.getElementById('appointmentDateFilter').value = '';
-                    filterAppointmentsByDate('');
-                });
-            }
-            
-            // Khởi tạo tìm kiếm bệnh nhân
-            if (document.getElementById('patientSearch')) {
-                document.getElementById('patientSearch').addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('#patientsTable tbody tr');
-                    
-                    rows.forEach(row => {
-                        const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                        const phone = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                        const address = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                        
-                        if (name.includes(searchTerm) || phone.includes(searchTerm) || address.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Khởi tạo tìm kiếm phòng khám
-            if (document.getElementById('clinicSearch')) {
-                document.getElementById('clinicSearch').addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('#clinicsTable tbody tr');
-                    
-                    rows.forEach(row => {
-                        const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                        const specialty = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                        const doctor = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                        
-                        if (name.includes(searchTerm) || specialty.includes(searchTerm) || doctor.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Khởi tạo tìm kiếm lịch hẹn
-            if (document.getElementById('appointmentSearch')) {
-                document.getElementById('appointmentSearch').addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('#appointmentsTable tbody tr');
-                    
-                    rows.forEach(row => {
-                        const patient = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                        const clinic = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                        const time = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-                        
-                        if (patient.includes(searchTerm) || clinic.includes(searchTerm) || time.includes(searchTerm)) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                });
-            }
-            
-            // Xử lý modal xem thông tin bệnh nhân
-            if (document.getElementById('viewPatientModal')) {
-                const viewPatientModal = document.getElementById('viewPatientModal');
-                viewPatientModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const patientIndex = button.getAttribute('data-bs-id');
-                    
-                    // Giả lập dữ liệu - trong thực tế sẽ gọi API hoặc dữ liệu từ server
-                    const patients = [
-                        {
-                            id: 'BN001',
-                            ten: 'Nguyễn Văn A',
-                            ngaySinh: '01/01/1990',
-                            gioiTinh: 'Nam',
-                            soDienThoai: '0987654321',
-                            diaChi: '123 Đường ABC, Quận XYZ, TP.HCM',
-                            baoHiemYTe: 'BH123456789',
-                            lanCuoiKham: '15/05/2023',
-                            ghiChu: 'Dị ứng với penicillin'
-                        }
-                    ];
-                    
-                    const patient = patients[patientIndex] || patients[0];
-                    
-                    document.getElementById('viewPatientName').textContent = patient.ten;
-                    document.getElementById('viewPatientId').textContent = 'ID: ' + patient.id;
-                    document.getElementById('viewPatientDob').textContent = patient.ngaySinh;
-                    document.getElementById('viewPatientGender').textContent = patient.gioiTinh;
-                    document.getElementById('viewPatientPhone').textContent = patient.soDienThoai;
-                    document.getElementById('viewPatientAddress').textContent = patient.diaChi;
-                    document.getElementById('viewPatientInsurance').textContent = patient.baoHiemYTe;
-                    document.getElementById('viewPatientLastVisit').textContent = patient.lanCuoiKham;
-                    document.getElementById('viewPatientNotes').textContent = patient.ghiChu || 'Không có ghi chú';
-                });
-            }
-            
-            // Xử lý modal chỉnh sửa bệnh nhân
-            if (document.getElementById('editPatientModal')) {
-                const editPatientModal = document.getElementById('editPatientModal');
-                editPatientModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const patientIndex = button.getAttribute('data-bs-id');
-                    
-                    // Giả lập dữ liệu - trong thực tế sẽ gọi API hoặc dữ liệu từ server
-                    const patients = [
-                        {
-                            id: 'BN001',
-                            ten: 'Nguyễn Văn A',
-                            ngaySinh: '1990-01-01',
-                            gioiTinh: 'Nam',
-                            soDienThoai: '0987654321',
-                            diaChi: '123 Đường ABC, Quận XYZ, TP.HCM',
-                            baoHiemYTe: 'BH123456789',
-                            ghiChu: 'Dị ứng với penicillin'
-                        }
-                    ];
-                    
-                    const patient = patients[patientIndex] || patients[0];
-                    
-                    document.getElementById('editPatientIndex').value = patientIndex;
-                    document.getElementById('editPatientName').value = patient.ten;
-                    document.getElementById('editPatientDob').value = patient.ngaySinh;
-                    document.getElementById('editPatientGender').value = patient.gioiTinh;
-                    document.getElementById('editPatientPhone').value = patient.soDienThoai;
-                    document.getElementById('editPatientAddress').value = patient.diaChi;
-                    document.getElementById('editPatientInsurance').value = patient.baoHiemYTe;
-                    document.getElementById('editPatientNotes').value = patient.ghiChu || '';
-                });
-            }
-            
-            // Xử lý modal xem thông tin phòng khám
-            if (document.getElementById('viewClinicModal')) {
-                const viewClinicModal = document.getElementById('viewClinicModal');
-                viewClinicModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const clinicIndex = button.getAttribute('data-bs-id');
-                    
-                    // Giả lập dữ liệu - trong thực tế sẽ gọi API hoặc dữ liệu từ server
-                    const clinics = [
-                        {
-                            id: 'PK001',
-                            tenPhong: 'Phòng khám Nội tổng quát',
-                            chuyenKhoa: 'Nội tổng quát',
-                            bacSiPhuTrach: 'BS. Nguyễn Văn A',
-                            trangThai: 'Hoạt động',
-                            lichLamViec: 'Thứ 2 - Thứ 6: 7h30 - 17h00',
-                            moTa: 'Phòng khám chuyên về nội tổng quát, khám và điều trị các bệnh lý thông thường.'
-                        }
-                    ];
-                    
-                    const clinic = clinics[clinicIndex] || clinics[0];
-                    
-                    document.getElementById('viewClinicName').textContent = clinic.tenPhong;
-                    document.getElementById('viewClinicId').textContent = clinic.id;
-                    document.getElementById('viewClinicSpecialty').textContent = clinic.chuyenKhoa;
-                    document.getElementById('viewClinicDoctor').textContent = clinic.bacSiPhuTrach;
-                    document.getElementById('viewClinicStatus').textContent = clinic.trangThai;
-                    document.getElementById('viewClinicStatus').className = clinic.trangThai === 'Hoạt động' ? 'status-active' : 'status-inactive';
-                    document.getElementById('viewClinicSchedule').textContent = clinic.lichLamViec;
-                    document.getElementById('viewClinicDescription').textContent = clinic.moTa;
-                });
-            }
-            
-            // Xử lý modal chỉnh sửa phòng khám
-            if (document.getElementById('editClinicModal')) {
-                const editClinicModal = document.getElementById('editClinicModal');
-                editClinicModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const clinicIndex = button.getAttribute('data-bs-id');
-                    
-                    // Giả lập dữ liệu - trong thực tế sẽ gọi API hoặc dữ liệu từ server
-                    const clinics = [
-                        {
-                            maPhong: 'PK001',
-                            tenPhong: 'Phòng khám Nội tổng quát',
-                            chuyenKhoa: 'Nội tổng quát',
-                            bacSiPhuTrach: 'BS. Nguyễn Văn A',
-                            trangThai: 'Hoạt động',
-                            moTa: 'Phòng khám chuyên về nội tổng quát, khám và điều trị các bệnh lý thông thường.'
-                        }
-                    ];
-                    
-                    const clinic = clinics[clinicIndex] || clinics[0];
-                    
-                    document.getElementById('editClinicIndex').value = clinicIndex;
-                    document.getElementById('editClinicCode').value = clinic.maPhong;
-                    document.getElementById('editClinicName').value = clinic.tenPhong;
-                    document.getElementById('editClinicSpecialty').value = clinic.chuyenKhoa;
-                    document.getElementById('editClinicDoctor').value = clinic.bacSiPhuTrach;
-                    document.getElementById('editClinicStatus').value = clinic.trangThai;
-                    document.getElementById('editClinicDescription').value = clinic.moTa || '';
-                });
-            }
-            
-            // Xử lý modal xem thông tin lịch hẹn
-            if (document.getElementById('viewAppointmentModal')) {
-                const viewAppointmentModal = document.getElementById('viewAppointmentModal');
-                viewAppointmentModal.addEventListener('show.bs.modal', function(event) {
-                    const button = event.relatedTarget;
-                    const appointmentIndex = button.getAttribute('data-bs-id');
-                    
-                    // Giả lập dữ liệu - trong thực tế sẽ gọi API hoặc dữ liệu từ server
-                    const appointments = [
-                        {
-                            id: 'LH001',
-                            benhNhan: 'Nguyễn Văn A - 0987654321',
-                            phongKham: 'Phòng khám Nội tổng quát (Nội tổng quát)',
-                            thoiGian: '14:00, 20/05/2023',
-                            trangThai: 'Đã đặt',
-                            ngayTao: '18/05/2023 09:30',
-                            ghiChu: 'Bệnh nhân cần khám lại để kiểm tra huyết áp'
-                        }
-                    ];
-                    
-                  // Các hàm xử lý modal
-if (document.getElementById('viewAppointmentModal')) {
-    const viewAppointmentModal = document.getElementById('viewAppointmentModal');
-    viewAppointmentModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const appointmentIndex = button.getAttribute('data-bs-id');
-        
-        const appointments = [
-            {
-                id: 'LH001',
-                benhNhan: 'Nguyễn Văn A - 0987654321',
-                phongKham: 'Phòng khám Nội tổng quát (Nội tổng quát)',
-                thoiGian: '14:00, 20/05/2023',
-                trangThai: 'Đã đặt',
-                ngayTao: '18/05/2023 09:30',
-                ghiChu: 'Bệnh nhân cần khám lại để kiểm tra huyết áp'
-            }
-        ];
-        
-        const appointment = appointments[appointmentIndex] || appointments[0];
-        
-        // Cập nhật DOM
-        document.getElementById('viewAppointmentId').textContent = appointment.id;
-        document.getElementById('viewAppointmentPatient').textContent = appointment.benhNhan;
-        document.getElementById('viewAppointmentClinic').textContent = appointment.phongKham;
-        document.getElementById('viewAppointmentTime').textContent = appointment.thoiGian;
-        document.getElementById('viewAppointmentStatus').textContent = appointment.trangThai;
-        document.getElementById('viewAppointmentStatus').className = 
-            appointment.trangThai === 'Đã đặt' ? 'status-active' : 
-            (appointment.trangThai === 'Đã hủy' ? 'status-inactive' : 'status-pending');
-        document.getElementById('viewAppointmentCreated').textContent = appointment.ngayTao;
-        document.getElementById('viewAppointmentNotes').textContent = appointment.ghiChu || 'Không có ghi chú';
-    });
+    <!-- PATIENTS -->
+    <div class="tab-pane fade" id="patients" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Danh sách bệnh nhân</h3>
+        <div class="input-group w-50">
+          <input type="text" id="patientSearch" class="form-control" placeholder="Tìm theo tên/SĐT..." onkeyup="filterPatients()">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPatientModal"><i class="fa-solid fa-plus me-2"></i>Thêm</button>
+        </div>
+      </div>
+      <div id="patientList" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3"></div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div class="tab-pane fade" id="doctors" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Danh sách bác sĩ</h3>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDoctorModal"><i class="fa-solid fa-plus me-2"></i>Thêm</button>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead><tr>
+          <th>ID</th><th>Tên</th><th>Chuyên khoa</th><th>Phí khám</th><th>Trạng thái</th><th>Thao tác</th>
+        </tr></thead>
+        <tbody id="doctorTable"></tbody>
+      </table>
+    </div>
+
+    <!-- ROOMS -->
+    <div class="tab-pane fade" id="rooms" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Danh sách phòng/giường</h3>
+        <div>
+          <select id="roomFilter" class="form-select d-inline-block w-auto me-2" onchange="filterRoomsTable()">
+            <option value="all">Tất cả</option>
+            <option value="free">Trống</option>
+            <option value="occupied">Đang sử dụng</option>
+            <option value="maintenance">Bảo trì</option>
+          </select>
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal"><i class="fa-solid fa-plus me-2"></i>Thêm</button>
+        </div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead><tr>
+          <th>Mã</th><th>Phòng</th><th>Giường</th><th>Loại</th><th>Giá/ngày</th><th>Trạng thái</th><th>Bệnh nhân</th><th>Thời gian bắt đầu</th><th>Thao tác</th>
+        </tr></thead>
+        <tbody id="roomTable"></tbody>
+      </table>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="tab-pane fade" id="services" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Dịch vụ y tế</h3>
+        <div class="input-group w-50">
+          <input type="text" id="serviceSearch" class="form-control" placeholder="Tìm dịch vụ..." onkeyup="filterServices()">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal"><i class="fa-solid fa-plus me-2"></i>Thêm</button>
+        </div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead><tr><th>Tên dịch vụ</th><th>Giá</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+        <tbody id="serviceTable"></tbody>
+      </table>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="tab-pane fade" id="history" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Lịch sử khám & hóa đơn</h3>
+        <div class="input-group w-50">
+          <input type="date" id="historyDateFilter" class="form-control" onchange="filterHistory()">
+          <input type="text" id="historySearch" class="form-control" placeholder="Tìm theo ID/Tên..." onkeyup="filterHistory()">
+        </div>
+      </div>
+      <table class="table table-striped table-hover">
+        <thead><tr>
+          <th>Mã</th><th>Ngày</th><th>Bệnh nhân</th><th>Bác sĩ</th><th>Phòng</th><th>Tổng tiền</th><th>Chi tiết</th>
+        </tr></thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="tab-pane fade" id="statistics" role="tabpanel">
+      <h3 class="text-center mb-4"><i class="fa-solid fa-chart-simple me-2"></i>Thống kê hoạt động</h3>
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="card stat-card" style="background:#2563eb">
+            <div class="card-body">
+              <div>
+                <div class="h6 mb-1">BN đang điều trị</div>
+                <div class="fs-3 fw-bold" id="statPatientsIn">0</div>
+              </div>
+              <i class="fa-solid fa-bed-pulse fa-2x"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card" style="background:#059669">
+            <div class="card-body">
+              <div>
+                <div class="h6 mb-1">Bác sĩ đang trực</div>
+                <div class="fs-3 fw-bold" id="statDoctorsOn">0</div>
+              </div>
+              <i class="fa-solid fa-user-doctor fa-2x"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card" style="background:#f59e0b">
+            <div class="card-body">
+              <div>
+                <div class="h6 mb-1">Giường trống</div>
+                <div class="fs-3 fw-bold" id="statBedsFree">0</div>
+              </div>
+              <i class="fa-solid fa-hospital-user fa-2x"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card stat-card" style="background:#7c3aed">
+            <div class="card-body">
+              <div>
+                <div class="h6 mb-1">Doanh thu</div>
+                <div class="fs-3 fw-bold" id="statRevenue">0đ</div>
+              </div>
+              <i class="fa-solid fa-coins fa-2x"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">Doanh thu theo tháng</h5>
+          <div id="monthlyRevenueChart" class="chart-area"></div>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">Tỷ trọng doanh thu theo loại phòng</h5>
+          <div id="revenueByRoomType" class="chart-area" style="height:180px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<!-- Add Patient -->
+<div class="modal fade" id="addPatientModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Thêm bệnh nhân</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="newPatientForm" onsubmit="addPatient(event)">
+        <div class="mb-2">
+          <label class="form-label">Họ tên</label>
+          <input type="text" class="form-control" id="newPatientName" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">SĐT</label>
+          <input type="tel" class="form-control" id="newPatientPhone" required>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Ngày sinh</label>
+          <input type="date" class="form-control" id="newPatientDob">
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Giới tính</label>
+          <select id="newPatientGender" class="form-select">
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+            <option value="Khác">Khác</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Edit Patient -->
+<div class="modal fade" id="editPatientModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Sửa bệnh nhân</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="editPatientForm" onsubmit="updatePatient(event)">
+        <input type="hidden" id="editPatientId">
+        <div class="mb-2"><label class="form-label">Họ tên</label>
+          <input type="text" class="form-control" id="editPatientName" required></div>
+        <div class="mb-2"><label class="form-label">SĐT</label>
+          <input type="tel" class="form-control" id="editPatientPhone" required></div>
+        <div class="mb-2"><label class="form-label">Ngày sinh</label>
+          <input type="date" class="form-control" id="editPatientDob"></div>
+        <div class="mb-2"><label class="form-label">Giới tính</label>
+          <select id="editPatientGender" class="form-select">
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+            <option value="Khác">Khác</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Add Doctor -->
+<div class="modal fade" id="addDoctorModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Thêm bác sĩ</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="newDoctorForm" onsubmit="addDoctor(event)">
+        <div class="mb-2"><label class="form-label">Họ tên</label>
+          <input type="text" class="form-control" id="newDoctorName" required></div>
+        <div class="mb-2"><label class="form-label">Chuyên khoa</label>
+          <input type="text" class="form-control" id="newDoctorDept" required></div>
+        <div class="mb-2"><label class="form-label">Phí khám (đ)</label>
+          <input type="number" class="form-control" id="newDoctorFee" min="0" value="150000" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="newDoctorStatus" class="form-select">
+            <option value="on">Đang trực</option>
+            <option value="off">Ngoài ca</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Edit Doctor -->
+<div class="modal fade" id="editDoctorModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Sửa bác sĩ</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="editDoctorForm" onsubmit="updateDoctor(event)">
+        <input type="hidden" id="editDoctorId">
+        <div class="mb-2"><label class="form-label">Họ tên</label>
+          <input type="text" class="form-control" id="editDoctorName" required></div>
+        <div class="mb-2"><label class="form-label">Chuyên khoa</label>
+          <input type="text" class="form-control" id="editDoctorDept" required></div>
+        <div class="mb-2"><label class="form-label">Phí khám (đ)</label>
+          <input type="number" class="form-control" id="editDoctorFee" min="0" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="editDoctorStatus" class="form-select">
+            <option value="on">Đang trực</option>
+            <option value="off">Ngoài ca</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Add Room -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Thêm phòng/giường</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="newRoomForm" onsubmit="addRoom(event)">
+        <div class="mb-2"><label class="form-label">Phòng</label>
+          <input type="text" class="form-control" id="newRoomName" placeholder="A101" required></div>
+        <div class="mb-2"><label class="form-label">Mã giường</label>
+          <input type="text" class="form-control" id="newBedCode" placeholder="G1" required></div>
+        <div class="mb-2"><label class="form-label">Loại</label>
+          <select id="newRoomType" class="form-select">
+            <option value="standard">Thường</option>
+            <option value="vip">VIP</option>
+          </select></div>
+        <div class="mb-2"><label class="form-label">Giá/ngày</label>
+          <input type="number" class="form-control" id="newRoomPrice" min="0" value="350000" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="newRoomStatus" class="form-select">
+            <option value="free">Trống</option>
+            <option value="occupied">Đang sử dụng</option>
+            <option value="maintenance">Bảo trì</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Edit Room -->
+<div class="modal fade" id="editRoomModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Sửa phòng/giường</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="editRoomForm" onsubmit="updateRoom(event)">
+        <input type="hidden" id="editRoomId">
+        <div class="mb-2"><label class="form-label">Phòng</label>
+          <input type="text" class="form-control" id="editRoomName" required></div>
+        <div class="mb-2"><label class="form-label">Mã giường</label>
+          <input type="text" class="form-control" id="editBedCode" required></div>
+        <div class="mb-2"><label class="form-label">Loại</label>
+          <select id="editRoomType" class="form-select">
+            <option value="standard">Thường</option>
+            <option value="vip">VIP</option>
+          </select></div>
+        <div class="mb-2"><label class="form-label">Giá/ngày</label>
+          <input type="number" class="form-control" id="editRoomPrice" min="0" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="editRoomStatus" class="form-select">
+            <option value="free">Trống</option>
+            <option value="occupied">Đang sử dụng</option>
+            <option value="maintenance">Bảo trì</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Add Service -->
+<div class="modal fade" id="addServiceModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Thêm dịch vụ</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="newServiceForm" onsubmit="addService(event)">
+        <div class="mb-2"><label class="form-label">Tên dịch vụ</label>
+          <input type="text" class="form-control" id="newServiceName" required></div>
+        <div class="mb-2"><label class="form-label">Giá</label>
+          <input type="number" class="form-control" id="newServicePrice" min="0" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="newServiceStatus" class="form-select">
+            <option value="active">Hoạt động</option>
+            <option value="inactive">Tạm ngưng</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Edit Service -->
+<div class="modal fade" id="editServiceModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Sửa dịch vụ</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+      <form id="editServiceForm" onsubmit="updateService(event)">
+        <input type="hidden" id="editServiceId">
+        <div class="mb-2"><label class="form-label">Tên dịch vụ</label>
+          <input type="text" class="form-control" id="editServiceName" required></div>
+        <div class="mb-2"><label class="form-label">Giá</label>
+          <input type="number" class="form-control" id="editServicePrice" required></div>
+        <div class="mb-2"><label class="form-label">Trạng thái</label>
+          <select id="editServiceStatus" class="form-select">
+            <option value="active">Hoạt động</option>
+            <option value="inactive">Tạm ngưng</option>
+          </select></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div></div>
+</div>
+
+<!-- Payment/Invoice Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1">
+  <div class="modal-dialog"><div class="modal-content">
+    <div class="modal-header"><h5 class="modal-title">Thanh toán & Hóa đơn</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body" id="invoiceBody"></div>
+  </div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ====== MOCK DATA ======
+let patients = [
+  { id: 201, name: "Nguyễn Văn A", phone: "0912345678", dob: "1989-04-12", gender: "Nam" },
+  { id: 202, name: "Trần Thị B", phone: "0981112233", dob: "1995-10-05", gender: "Nữ" }
+];
+let doctors = [
+  { id: 301, name: "BS. Lê Minh", dept: "Nội tổng quát", fee: 150000, status: "on" },
+  { id: 302, name: "BS. Phạm An", dept: "Ngoại khoa", fee: 200000, status: "off" },
+  { id: 303, name: "BS. Đặng Vy", dept: "Nhi khoa", fee: 180000, status: "on" }
+];
+let services = [
+  { id: 1, name: "Khám tổng quát", price: 120000, status: "active" },
+  { id: 2, name: "Xét nghiệm máu", price: 180000, status: "active" },
+  { id: 3, name: "Chụp X-quang", price: 250000, status: "active" },
+  { id: 4, name: "Siêu âm", price: 220000, status: "inactive" }
+];
+let rooms = [
+  { id: 1, room: "A101", bed: "G1", type: "standard", price: 350000, status: "free", patientId: null, doctorId: null, startTime: null },
+  { id: 2, room: "A101", bed: "G2", type: "standard", price: 350000, status: "occupied", patientId: 201, doctorId: 301, startTime: Date.now() - 36e5 * 10 },
+  { id: 3, room: "VIP01", bed: "G1", type: "vip", price: 700000, status: "maintenance", patientId: null, doctorId: null, startTime: null },
+  { id: 4, room: "B203", bed: "G1", type: "standard", price: 350000, status: "free", patientId: null, doctorId: null, startTime: null }
+];
+let history = [
+  {
+    id: 1,
+    date: "2025-08-14",
+    patientName: "Nguyễn Văn A",
+    doctorName: "BS. Lê Minh",
+    roomName: "A101/G2",
+    totalAmount: 650000,
+    details: {
+      days: 1,
+      roomCost: 350000,
+      doctorFee: 150000,
+      services: [{ name: "Khám tổng quát", quantity: 1, price: 120000 }, { name: "Xét nghiệm máu", quantity: 1, price: 180000 }]
+    }
+  }
+];
+
+// ====== HELPERS ======
+const formatCurrency = (n) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n || 0);
+const getDoctor = id => doctors.find(d => d.id == id);
+const getPatient = id => patients.find(p => p.id == id);
+const roomTypeText = t => t === 'vip' ? 'VIP' : 'Thường';
+const roomStatusText = s => s==='free'?'Trống':(s==='occupied'?'Đang sử dụng':'Bảo trì');
+const statusBadgeClass = s => s==='free'?'status-free':(s==='occupied'?'status-occupied':'status-maintenance');
+
+// ====== DASHBOARD RENDER ======
+function renderAdmitSelects(){
+  const dSel = document.getElementById('admitDoctorId');
+  const rSel = document.getElementById('admitRoomId');
+  dSel.innerHTML = '<option value="">-- Chọn bác sĩ --</option>' + doctors.map(d => `<option value="${d.id}" ${d.status==='off'?'disabled':''}>${d.name} - ${d.dept} (${formatCurrency(d.fee)}) ${d.status==='off'?'[Ngoài ca]':''}</option>`).join('');
+  const freeRooms = rooms.filter(r => r.status === 'free');
+  rSel.innerHTML = '<option value="">-- Chọn phòng/giường --</option>' + freeRooms.sort((a,b)=> a.type===b.type ? a.price-b.price : (a.type==='vip'?-1:1)).map(r => `<option value="${r.id}">${r.room}/${r.bed} (${roomTypeText(r.type)}) - ${formatCurrency(r.price)}/ngày</option>`).join('');
+}
+function renderAdmitServices(){
+  const wrap = document.getElementById('admitServices');
+  wrap.innerHTML = services.filter(s => s.status==='active').map(s => `
+    <div class="d-flex align-items-center mb-2">
+      <input type="number" class="form-control me-2" value="0" min="0" data-service-id="${s.id}">
+      <span>${s.name} (${formatCurrency(s.price)})</span>
+    </div>
+  `).join('');
 }
 
-// Hàm in thông tin lịch hẹn (ĐÃ KIỂM TRA KỸ TEMPLATE STRING)
-function printAppointmentInfo() {
-    const printWindow = window.open('', '', 'width=800,height=600');
-    const content = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Thông tin lịch hẹn</title>
-            <style>
-                body { font-family: Arial; margin: 20px; }
-                h2 { color: #4a6bff; text-align: center; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th, td { border: 1px solid #ddd; padding: 8px; }
-                .header { text-align: center; margin-bottom: 30px; }
-                .footer { margin-top: 30px; text-align: right; }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h2>THÔNG TIN LỊCH HẸN</h2>
+function renderDashboardRooms(){
+  const container = document.getElementById('dashboardRooms');
+  container.innerHTML='';
+  const sortOpt = document.getElementById('sortRooms').value;
+  const sorted = [...rooms];
+  if(sortOpt==='price_asc') sorted.sort((a,b)=>a.price-b.price);
+  if(sortOpt==='price_desc') sorted.sort((a,b)=>b.price-a.price);
+
+  sorted.forEach(r => {
+    const pat = r.patientId ? getPatient(r.patientId) : null;
+    const doc = r.doctorId ? getDoctor(r.doctorId) : null;
+    const headerClass = r.status==='free'?'room-free':(r.status==='occupied'?'room-occupied':'room-maintenance');
+    const timer = r.startTime ? `<p class="mb-1"><i class="fa-regular fa-clock me-1"></i><span id="timer-${r.id}">--:--:--</span></p>` : '';
+    const actionBtn = r.status==='occupied'
+      ? `<button class="btn btn-danger btn-sm" onclick="discharge(${r.id})"><i class="fa-solid fa-person-walking-dashed-line-arrow-right"></i> Xuất viện</button>`
+      : `<button class="btn btn-primary btn-sm" onclick="selectRoomForAdmit(${r.id})" ${r.status!=='free'?'disabled':''}><i class="fa-solid fa-person-circle-plus"></i> Nhập viện</button>`;
+    container.innerHTML += `
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card room-card">
+          <div class="card-header ${headerClass}">
+            <span><strong>${r.room}/${r.bed}</strong> • ${roomTypeText(r.type)}</span>
+            <span class="status-badge ${statusBadgeClass(r.status)}">${roomStatusText(r.status)}</span>
+          </div>
+          <div class="card-body">
+            ${pat?`<p class="mb-1"><i class="fa-solid fa-user me-1"></i>${pat.name}</p>`:''}
+            ${doc?`<p class="mb-1"><i class="fa-solid fa-user-doctor me-1"></i>${doc.name}</p>`:''}
+            ${timer}
+            <div class="d-flex justify-content-between align-items-center mt-2">
+              <span class="fw-bold text-primary">${formatCurrency(r.price)}/ngày</span>
+              ${actionBtn}
             </div>
-            <table>
-                <!-- Nội dung bảng -->
-            </table>
-            <div class="footer">
-                <p>Ngày in: ${new Date().toLocaleDateString()}</p>
-            </div>
-        </body>
-        </html>
-    `;  // ĐÃ ĐÓNG TEMPLATE STRING
-    
-    printWindow.document.write(content);
-    printWindow.document.close();
+          </div>
+        </div>
+      </div>`;
+  });
+  updateRoomTimers();
+  renderAdmitSelects(); // refresh free rooms
 }
 
-// Phần cuối file
-`; // Đóng template literal an toàn (nếu cần)
+function updateRoomTimers(){
+  rooms.forEach(r => {
+    if(r.status==='occupied' && r.startTime){
+      const el = document.getElementById(`timer-${r.id}`);
+      if(el){
+        if(r._interval) clearInterval(r._interval);
+        r._interval = setInterval(() => {
+          const elapsed = Math.floor((Date.now() - r.startTime)/1000);
+          const h = Math.floor(elapsed/3600);
+          const m = Math.floor((elapsed%3600)/60);
+          const s = elapsed%60;
+          el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        }, 1000);
+      }
+    } else if(r._interval){
+      clearInterval(r._interval);
+    }
+  });
+}
 
-// Giả lập hiển thị toast
-// showToast('success', 'Thao tác thành công');
+function selectRoomForAdmit(id){
+  document.getElementById('admitRoomId').value = id;
+}
+
+function startAdmission(){
+  const name = document.getElementById('admitName').value.trim();
+  const phone = document.getElementById('admitPhone').value.trim();
+  const doctorId = parseInt(document.getElementById('admitDoctorId').value);
+  const roomId = parseInt(document.getElementById('admitRoomId').value);
+  if(!name || !phone || !doctorId || !roomId){
+    alert('Vui lòng điền đầy đủ thông tin!');
+    return;
+  }
+  // Create or reuse patient (simple: always create new id)
+  const newPatient = { id: Date.now(), name, phone, dob:'', gender:'Khác' };
+  patients.push(newPatient);
+  // Attach to room
+  const room = rooms.find(r => r.id===roomId);
+  room.status = 'occupied';
+  room.patientId = newPatient.id;
+  room.doctorId = doctorId;
+  room.startTime = Date.now();
+
+  // Collect selected services
+  const serviceInputs = Array.from(document.querySelectorAll('#admitServices input[type=number]'));
+  const orderedServices = serviceInputs.map(inp => ({ id: parseInt(inp.dataset.serviceId), qty: parseInt(inp.value)||0 })).filter(x=>x.qty>0);
+
+  room._orderedServices = orderedServices; // keep simple association for this admission
+
+  renderDashboardRooms();
+  renderRoomsTable();
+  renderPatients();
+  resetAdmitForm();
+}
+
+function resetAdmitForm(){ document.getElementById('admitForm').reset(); }
+
+function discharge(roomId){
+  const room = rooms.find(r=>r.id===roomId);
+  if(!room || room.status!=='occupied') return;
+  const pat = getPatient(room.patientId);
+  const doc = getDoctor(room.doctorId);
+  const start = room.startTime;
+  const now = Date.now();
+  const msPerDay = 24*3600*1000;
+  const days = Math.max(1, Math.ceil((now - start)/msPerDay)); // làm tròn lên theo ngày, tối thiểu 1
+  const roomCost = days * room.price;
+  const doctorFee = doc ? doc.fee : 0;
+  const serviceCost = (room._orderedServices||[]).reduce((sum, s) => {
+    const svc = services.find(x=>x.id===s.id);
+    return sum + (svc ? svc.price * s.qty : 0);
+  }, 0);
+  const total = roomCost + doctorFee + serviceCost;
+
+  // Build invoice modal
+  const body = document.getElementById('invoiceBody');
+  body.innerHTML = `
+    <h5>Hóa đơn thanh toán</h5><hr>
+    <p><strong>Bệnh nhân:</strong> ${pat?pat.name:'---'}</p>
+    <p><strong>Bác sĩ:</strong> ${doc?doc.name:'---'} (${doc?doc.dept:'---'})</p>
+    <p><strong>Phòng/Giường:</strong> ${room.room}/${room.bed} (${roomTypeText(room.type)})</p>
+    <p><strong>Thời gian điều trị:</strong> ${days} ngày</p>
+    <hr>
+    <p><strong>Tiền phòng:</strong> ${formatCurrency(roomCost)}</p>
+    <p><strong>Phí bác sĩ:</strong> ${formatCurrency(doctorFee)}</p>
+    <div><strong>Dịch vụ:</strong>
+      <ul>
+        ${(room._orderedServices||[]).map(s=>{
+          const svc = services.find(x=>x.id===s.id);
+          return `<li>${svc?svc.name:'Dịch vụ'} x ${s.qty} (${formatCurrency(svc?svc.price:0)})</li>`;
+        }).join('') || '<li>Không</li>'}
+      </ul>
+    </div>
+    <h4 class="text-end">Tổng cộng: <span class="text-primary" id="invoiceTotal">${formatCurrency(total)}</span></h4>
+    <div class="mb-3">
+      <label class="form-label">Tiền khách đưa</label>
+      <input type="number" class="form-control" id="paidAmount" value="${total}" oninput="calcChange()">
+    </div>
+    <h5 class="text-end">Tiền thừa: <span id="changeAmount" class="text-success">${formatCurrency(0)}</span></h5>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success me-2" onclick="confirmPayment(${room.id}, ${days}, ${roomCost}, ${doctorFee})">Thanh toán</button>
+      <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+    </div>
+  `;
+  const modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+  modal.show();
+}
+
+function calcChange(){
+  const total = parseInt(document.getElementById('invoiceTotal').textContent.replace(/[^0-9]/g,''))||0;
+  const paid = parseInt(document.getElementById('paidAmount').value)||0;
+  const change = Math.max(0, paid-total);
+  document.getElementById('changeAmount').textContent = formatCurrency(change);
+}
+
+function confirmPayment(roomId, days, roomCost, doctorFee){
+  const room = rooms.find(r=>r.id===roomId);
+  const pat = getPatient(room.patientId);
+  const doc = getDoctor(room.doctorId);
+  const servicesList = (room._orderedServices||[]).map(s => {
+    const svc = services.find(x=>x.id===s.id);
+    return { name: svc?svc.name:'Dịch vụ', quantity: s.qty, price: svc?svc.price:0 };
+  });
+  const total = roomCost + doctorFee + servicesList.reduce((sum,s)=>sum + s.price*s.quantity,0);
+  // push history
+  history.push({
+    id: Date.now(),
+    date: new Date().toISOString().slice(0,10),
+    patientName: pat?pat.name:'---',
+    doctorName: doc?doc.name:'---',
+    roomName: `${room.room}/${room.bed}`,
+    totalAmount: total,
+    details: { days, roomCost, doctorFee, services: servicesList }
+  });
+  alert('Thanh toán thành công!');
+  // reset room
+  room.status='free'; room.patientId=null; room.doctorId=null; room.startTime=null; room._orderedServices=[];
+  // refresh UI
+  renderDashboardRooms(); renderRoomsTable(); renderStatistics(); renderHistoryTable();
+  // close modal
+  bootstrap.Modal.getInstance(document.getElementById('invoiceModal')).hide();
+}
+
+// ====== PATIENTS ======
+function renderPatients(){
+  const wrap = document.getElementById('patientList');
+  wrap.innerHTML='';
+  patients.forEach(p => {
+    wrap.innerHTML += `
+      <div class="col">
+        <div class="customer-card-item">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="mb-0">${p.name}</h5>
+            <span class="badge badge-soft">ID: ${p.id}</span>
+          </div>
+          <div class="mb-1"><i class="fa-solid fa-phone me-2 text-primary"></i>${p.phone||'---'}</div>
+          <div class="mb-1"><i class="fa-regular fa-calendar me-2 text-primary"></i>${p.dob||'---'}</div>
+          <div class="mb-2"><i class="fa-solid fa-venus-mars me-2 text-primary"></i>${p.gender||'---'}</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-warning btn-sm" onclick="showEditPatient(${p.id})">Sửa</button>
+            <button class="btn btn-danger btn-sm" onclick="deletePatient(${p.id})">Xóa</button>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+function addPatient(e){
+  e.preventDefault();
+  const name = document.getElementById('newPatientName').value;
+  const phone = document.getElementById('newPatientPhone').value;
+  const dob = document.getElementById('newPatientDob').value;
+  const gender = document.getElementById('newPatientGender').value;
+  patients.push({ id: Date.now(), name, phone, dob, gender });
+  renderPatients();
+  bootstrap.Modal.getInstance(document.getElementById('addPatientModal')).hide();
+  document.getElementById('newPatientForm').reset();
+}
+function showEditPatient(id){
+  const p = patients.find(x=>x.id==id); if(!p) return;
+  document.getElementById('editPatientId').value = p.id;
+  document.getElementById('editPatientName').value = p.name;
+  document.getElementById('editPatientPhone').value = p.phone||'';
+  document.getElementById('editPatientDob').value = p.dob||'';
+  document.getElementById('editPatientGender').value = p.gender||'Khác';
+  new bootstrap.Modal(document.getElementById('editPatientModal')).show();
+}
+function updatePatient(e){
+  e.preventDefault();
+  const id = parseInt(document.getElementById('editPatientId').value);
+  const name = document.getElementById('editPatientName').value;
+  const phone = document.getElementById('editPatientPhone').value;
+  const dob = document.getElementById('editPatientDob').value;
+  const gender = document.getElementById('editPatientGender').value;
+  const idx = patients.findIndex(p=>p.id==id);
+  if(idx>-1) patients[idx] = { id, name, phone, dob, gender };
+  renderPatients();
+  bootstrap.Modal.getInstance(document.getElementById('editPatientModal')).hide();
+}
+function deletePatient(id){
+  if(confirm('Xóa bệnh nhân này?')){
+    patients = patients.filter(p=>p.id!==id);
+    renderPatients();
+  }
+}
+function filterPatients(){
+  const q = document.getElementById('patientSearch').value.toLowerCase();
+  Array.from(document.querySelectorAll('#patientList .col')).forEach(col => {
+    const text = col.textContent.toLowerCase();
+    col.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
+// ====== DOCTORS ======
+function renderDoctors(){
+  const tb = document.getElementById('doctorTable'); tb.innerHTML='';
+  doctors.forEach(d => {
+    tb.innerHTML += `
+      <tr>
+        <td>${d.id}</td>
+        <td>${d.name}</td>
+        <td>${d.dept}</td>
+        <td>${formatCurrency(d.fee)}</td>
+        <td><span class="badge ${d.status==='on'?'bg-success':'bg-secondary'}">${d.status==='on'?'Đang trực':'Ngoài ca'}</span></td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="showEditDoctor(${d.id})">Sửa</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteDoctor(${d.id})">Xóa</button>
+        </td>
+      </tr>`;
+  });
+}
+function addDoctor(e){
+  e.preventDefault();
+  const name = document.getElementById('newDoctorName').value;
+  const dept = document.getElementById('newDoctorDept').value;
+  const fee = parseFloat(document.getElementById('newDoctorFee').value)||0;
+  const status = document.getElementById('newDoctorStatus').value;
+  doctors.push({ id: Date.now(), name, dept, fee, status });
+  renderDoctors(); renderAdmitSelects();
+  bootstrap.Modal.getInstance(document.getElementById('addDoctorModal')).hide();
+  document.getElementById('newDoctorForm').reset();
+}
+function showEditDoctor(id){
+  const d = doctors.find(x=>x.id==id); if(!d) return;
+  document.getElementById('editDoctorId').value = d.id;
+  document.getElementById('editDoctorName').value = d.name;
+  document.getElementById('editDoctorDept').value = d.dept;
+  document.getElementById('editDoctorFee').value = d.fee;
+  document.getElementById('editDoctorStatus').value = d.status;
+  new bootstrap.Modal(document.getElementById('editDoctorModal')).show();
+}
+function updateDoctor(e){
+  e.preventDefault();
+  const id = parseInt(document.getElementById('editDoctorId').value);
+  const name = document.getElementById('editDoctorName').value;
+  const dept = document.getElementById('editDoctorDept').value;
+  const fee = parseFloat(document.getElementById('editDoctorFee').value);
+  const status = document.getElementById('editDoctorStatus').value;
+  const idx = doctors.findIndex(d=>d.id==id);
+  if(idx>-1) doctors[idx] = { id, name, dept, fee, status };
+  renderDoctors(); renderAdmitSelects();
+  bootstrap.Modal.getInstance(document.getElementById('editDoctorModal')).hide();
+}
+function deleteDoctor(id){
+  if(confirm('Xóa bác sĩ này?')){
+    doctors = doctors.filter(d=>d.id!==id);
+    renderDoctors(); renderAdmitSelects();
+  }
+}
+
+// ====== ROOMS ======
+function renderRoomsTable(){
+  const tb = document.getElementById('roomTable'); tb.innerHTML='';
+  rooms.forEach(r => {
+    const pName = r.patientId ? (getPatient(r.patientId)?.name || '---') : 'N/A';
+    const start = r.startTime ? new Date(r.startTime).toLocaleString('vi-VN') : 'N/A';
+    tb.innerHTML += `
+      <tr>
+        <td>${r.id}</td>
+        <td>${r.room}</td>
+        <td>${r.bed}</td>
+        <td>${roomTypeText(r.type)}</td>
+        <td>${formatCurrency(r.price)}</td>
+        <td><span class="badge ${r.status==='free'?'bg-success':(r.status==='occupied'?'bg-warning text-dark':'bg-danger')}">${roomStatusText(r.status)}</span></td>
+        <td>${pName}</td>
+        <td>${start}</td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="showEditRoom(${r.id})">Sửa</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteRoom(${r.id})">Xóa</button>
+        </td>
+      </tr>`;
+  });
+}
+function showEditRoom(id){
+  const r = rooms.find(x=>x.id==id); if(!r) return;
+  document.getElementById('editRoomId').value = r.id;
+  document.getElementById('editRoomName').value = r.room;
+  document.getElementById('editBedCode').value = r.bed;
+  document.getElementById('editRoomType').value = r.type;
+  document.getElementById('editRoomPrice').value = r.price;
+  document.getElementById('editRoomStatus').value = r.status;
+  new bootstrap.Modal(document.getElementById('editRoomModal')).show();
+}
+function updateRoom(e){
+  e.preventDefault();
+  const id = parseInt(document.getElementById('editRoomId').value);
+  const roomName = document.getElementById('editRoomName').value;
+  const bed = document.getElementById('editBedCode').value;
+  const type = document.getElementById('editRoomType').value;
+  const price = parseFloat(document.getElementById('editRoomPrice').value);
+  const status = document.getElementById('editRoomStatus').value;
+  const idx = rooms.findIndex(r=>r.id==id);
+  if(idx>-1) rooms[idx] = { ...rooms[idx], room: roomName, bed, type, price, status };
+  renderRoomsTable(); renderDashboardRooms();
+  bootstrap.Modal.getInstance(document.getElementById('editRoomModal')).hide();
+}
+function addRoom(e){
+  e.preventDefault();
+  const roomName = document.getElementById('newRoomName').value;
+  const bed = document.getElementById('newBedCode').value;
+  const type = document.getElementById('newRoomType').value;
+  const price = parseFloat(document.getElementById('newRoomPrice').value);
+  const status = document.getElementById('newRoomStatus').value;
+  rooms.push({ id: Date.now(), room: roomName, bed, type, price, status, patientId:null, doctorId:null, startTime:null });
+  renderRoomsTable(); renderDashboardRooms();
+  bootstrap.Modal.getInstance(document.getElementById('addRoomModal')).hide();
+  document.getElementById('newRoomForm').reset();
+}
+function deleteRoom(id){
+  if(confirm('Xóa phòng/giường này?')){
+    rooms = rooms.filter(r=>r.id!==id);
+    renderRoomsTable(); renderDashboardRooms();
+  }
+}
+function filterRoomsTable(){
+  const v = document.getElementById('roomFilter').value;
+  Array.from(document.querySelectorAll('#roomTable tr')).forEach(tr => {
+    const text = tr.textContent;
+    if(v==='all') tr.style.display='';
+    else tr.style.display = text.includes(v==='free'?'Trống':(v==='occupied'?'Đang sử dụng':'Bảo trì')) ? '' : 'none';
+  });
+}
+
+// ====== SERVICES ======
+function renderServices(){
+  const tb = document.getElementById('serviceTable'); tb.innerHTML='';
+  services.forEach(s => {
+    tb.innerHTML += `
+      <tr>
+        <td>${s.name}</td>
+        <td>${formatCurrency(s.price)}</td>
+        <td><span class="badge ${s.status==='active'?'bg-success':'bg-secondary'}">${s.status==='active'?'Hoạt động':'Tạm ngưng'}</span></td>
+        <td>
+          <button class="btn btn-warning btn-sm" onclick="showEditService(${s.id})">Sửa</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteService(${s.id})">Xóa</button>
+        </td>
+      </tr>`;
+  });
+  renderAdmitServices();
+}
+function addService(e){
+  e.preventDefault();
+  const name = document.getElementById('newServiceName').value;
+  const price = parseFloat(document.getElementById('newServicePrice').value)||0;
+  const status = document.getElementById('newServiceStatus').value;
+  services.push({ id: Date.now(), name, price, status });
+  renderServices();
+  bootstrap.Modal.getInstance(document.getElementById('addServiceModal')).hide();
+  document.getElementById('newServiceForm').reset();
+}
+function showEditService(id){
+  const s = services.find(x=>x.id==id); if(!s) return;
+  document.getElementById('editServiceId').value = s.id;
+  document.getElementById('editServiceName').value = s.name;
+  document.getElementById('editServicePrice').value = s.price;
+  document.getElementById('editServiceStatus').value = s.status;
+  new bootstrap.Modal(document.getElementById('editServiceModal')).show();
+}
+function updateService(e){
+  e.preventDefault();
+  const id = parseInt(document.getElementById('editServiceId').value);
+  const name = document.getElementById('editServiceName').value;
+  const price = parseFloat(document.getElementById('editServicePrice').value);
+  const status = document.getElementById('editServiceStatus').value;
+  const idx = services.findIndex(s=>s.id==id);
+  if(idx>-1) services[idx] = { id, name, price, status };
+  renderServices();
+  bootstrap.Modal.getInstance(document.getElementById('editServiceModal')).hide();
+}
+function deleteService(id){
+  if(confirm('Xóa dịch vụ này?')){
+    services = services.filter(s=>s.id!==id);
+    renderServices();
+  }
+}
+function filterServices(){
+  const q = document.getElementById('serviceSearch').value.toLowerCase();
+  Array.from(document.querySelectorAll('#serviceTable tr')).forEach(tr => {
+    tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+// ====== HISTORY ======
+function renderHistoryTable(list=history){
+  const tb = document.getElementById('historyTable'); tb.innerHTML='';
+  list.forEach(h => {
+    tb.innerHTML += `
+      <tr>
+        <td>${h.id}</td>
+        <td>${h.date}</td>
+        <td>${h.patientName}</td>
+        <td>${h.doctorName}</td>
+        <td>${h.roomName}</td>
+        <td>${formatCurrency(h.totalAmount)}</td>
+        <td><button class="btn btn-info btn-sm text-white" onclick="showHistoryDetails(${h.id})"><i class="fa-regular fa-eye"></i></button></td>
+      </tr>`;
+  });
+}
+function showHistoryDetails(id){
+  const h = history.find(x=>x.id==id); if(!h) return;
+  const detail = `
+    Chi phí phòng: ${formatCurrency(h.details.roomCost)}
+    Phí bác sĩ: ${formatCurrency(h.details.doctorFee)}
+    Dịch vụ:
+    ${(h.details.services||[]).map(s=>`- ${s.name} x ${s.quantity} (${formatCurrency(s.price)})`).join('\\n') || '- Không'}
+  `;
+  alert(detail);
+}
+function filterHistory(){
+  const date = document.getElementById('historyDateFilter').value;
+  const q = document.getElementById('historySearch').value.toLowerCase();
+  const filtered = history.filter(h => (!date || h.date===date) && (!q || (h.patientName+h.id).toLowerCase().includes(q)));
+  renderHistoryTable(filtered);
+}
+
+// ====== STATISTICS ======
+function renderStatistics(){
+  const patientsIn = rooms.filter(r=>r.status==='occupied').length;
+  const doctorsOn = doctors.filter(d=>d.status==='on').length;
+  const bedsFree = rooms.filter(r=>r.status==='free').length;
+  const totalRevenue = history.reduce((s,h)=>s+h.totalAmount,0);
+  document.getElementById('statPatientsIn').textContent = patientsIn;
+  document.getElementById('statDoctorsOn').textContent = doctorsOn;
+  document.getElementById('statBedsFree').textContent = bedsFree;
+  document.getElementById('statRevenue').textContent = formatCurrency(totalRevenue);
+
+  // monthly revenue (fake from history by month)
+  const byMonth = {};
+  history.forEach(h=>{
+    const m = h.date.slice(0,7); // YYYY-MM
+    byMonth[m] = (byMonth[m]||0) + h.totalAmount;
+  });
+  const chart = document.getElementById('monthlyRevenueChart');
+  chart.innerHTML = '';
+  const months = Object.keys(byMonth).sort();
+  months.forEach(m=>{
+    const max = Math.max(...Object.values(byMonth));
+    const pct = max? Math.round(byMonth[m]/max*100):0;
+    chart.innerHTML += `<div class="bar" style="height:${pct}%">
+      <div class="value">${(byMonth[m]/1000).toFixed(0)}k</div>
+      <div class="label">${m}</div>
+    </div>`;
+  });
+
+  // revenue by room type
+  const revType = { standard:0, vip:0 };
+  history.forEach(h=>{
+    const room = rooms.find(r=>`${r.room}/${r.bed}`===h.roomName);
+    if(room){ revType[room.type] += h.details.roomCost; }
+  });
+  const total = revType.standard + revType.vip;
+  const chart2 = document.getElementById('revenueByRoomType');
+  chart2.innerHTML = `
+    <div class="bar" style="height:${total?Math.round(revType.standard/total*100):0}%">
+      <div class="value">${(revType.standard/1000).toFixed(0)}k</div>
+      <div class="label">Thường</div>
+    </div>
+    <div class="bar" style="height:${total?Math.round(revType.vip/total*100):0}%">
+      <div class="value">${(revType.vip/1000).toFixed(0)}k</div>
+      <div class="label">VIP</div>
+    </div>`;
+}
+
+// ====== INIT ======
+document.addEventListener('DOMContentLoaded', () => {
+  renderDashboardRooms();
+  renderPatients();
+  renderDoctors();
+  renderRoomsTable();
+  renderServices();
+  renderHistoryTable();
+  renderStatistics();
+
+  document.getElementById('history-tab').addEventListener('click', renderHistoryTable);
+  document.getElementById('stats-tab').addEventListener('click', renderStatistics);
+});
 </script>
 </body>
 </html>
