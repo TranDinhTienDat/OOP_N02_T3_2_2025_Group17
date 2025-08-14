@@ -1,4 +1,3 @@
-
 public class BenhNhan {
     private String maBN;
     private String ten;
