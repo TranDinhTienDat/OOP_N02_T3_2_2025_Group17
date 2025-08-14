@@ -77,8 +77,8 @@ Thành Viên
 | 3   | **Nguyễn Văn Hào**     | 24100450 | [haonguyen06](https://github.com/haonguyen06)         |
 
   
-Link Public : https://turbo-waffle-x54ppx7x65x936wg5-8080.app.github.dev/benhvien 
+Link Public : 
 
-Link codespaces : https://github.com/codespaces/turbo-waffle-x54ppx7x65x936wg5 
+Link codespaces : 
 
 Link Demo Team : 
