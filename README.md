@@ -15,6 +15,7 @@ Quản lý danh sách bệnh nhân trong bệnh viện/phòng khám.
 Theo dõi và quản lý giao dịch thanh toán.
 
 🧍‍♂️ 2. Bệnh nhân (Patient)
+
 Thuộc tính	Kiểu dữ liệu	Mô tả
 🆔 ma	String	Mã định danh bệnh nhân (duy nhất)
 📝 ten	String	Họ và tên bệnh nhân
@@ -22,6 +23,7 @@ Thuộc tính	Kiểu dữ liệu	Mô tả
 ⚧ gioi_tinh	String	Giới tính (Nam / Nữ / Khác)
 
 🏥 3. Phòng khám / Bệnh viện (Hospital / Clinic)
+
 Thuộc tính	Kiểu dữ liệu	Mô tả
 🏷 ten_co_so	String	Tên bệnh viện hoặc phòng khám
 📋 danh_sach_benh_nhan	List<Patient>	Danh sách bệnh nhân đang được quản lý
